@@ -91,9 +91,7 @@ import "./globals.css";
 import { ChatProvider } from "./context/chatcontext";
 import ReduxProvider from "./rtk/reduxprovider";
 import IncomingCall from "./calling/page";
-import Layoutbar from "./component/layoutbar";
-import ChatVerticalLayout from "./component/layoutbar";
-import ChatSidebarLayout from "./component/layoutbar";
+
 import WhatsApplayout from "./dummy/layoutt";
 
 
