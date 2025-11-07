@@ -1,58 +1,35 @@
 "use client";
-import { useEffect, useLayoutEffect, useState } from "react";
-import axios from "axios";
-import { useRouter } from "next/navigation";
-import api from "../apicall.js";
+
+import React, { useState, useContext } from "react";
+import Image from "next/image";
+import { ChatContext } from "../context/chatcontext";
+import api from "../apicall";
 
 export default function SignupPage() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
 
-    const router = useRouter();
+    const { setMyUsername, updatePremium, setlogin } = useContext(ChatContext);
 
-
-
-    // ✅ Validation
+    // Validation
     const validate = () => {
         const newErrors = {};
         if (!username.trim()) newErrors.username = "Username is required";
         if (!password) newErrors.password = "Password is required";
         else if (password.length < 6) newErrors.password = "Min 6 chars";
-        if (!confirmPassword) newErrors.confirmPassword = "Confirm Password is required";
-        else if (password !== confirmPassword)
-            newErrors.confirmPassword = "Passwords do not match";
+        if (!confirmPassword) newErrors.confirmPassword = "Confirm password is required";
+        else if (password !== confirmPassword) newErrors.confirmPassword = "Passwords do not match";
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
-
-
-
-
-    // useLayoutEffect(() => {
-
-    //     let call = async () => {
-    //         let call = await api.get('/apitest')
-    //         console.log(call)
-    //     }
-
-
-
-    //     call()
-
-    // }, [])
-
-
-
-
-
-
-
-    // ✅ Signup handler
+    // Signup handler
     const handleSignup = async () => {
         if (!validate()) return;
 
@@ -60,28 +37,27 @@ export default function SignupPage() {
         const lowerUsername = username.toLowerCase();
 
         try {
-            const response = await api.post('/singup', {
+            const { data } = await api.post("/singup", {
                 username: lowerUsername,
                 password,
             });
 
-            const apiRes = response.data;
+            if (data.token) localStorage.setItem("tokenn", data.token);
+            if (data.user?.username) {
+                localStorage.setItem("username", data.user.username);
+                setMyUsername(data.user.username);
+            }
 
-            console.log(apiRes)
-
-            // ✅ Save to localStorage (AsyncStorage ki jagah)
-            if (apiRes.token) localStorage.setItem("token", apiRes.token);
-            if (apiRes.user?.username) localStorage.setItem("username", apiRes.user.username);
-            if (apiRes.user?.premiumExpiry)
-                localStorage.setItem("premiumExpiry", apiRes.user.premiumExpiry);
-            if (apiRes.user?.isPremium !== undefined)
-                localStorage.setItem("isPremium", apiRes.user.isPremium.toString());
+            if (data.user?.premiumExpiry) {
+                localStorage.setItem("premiumExpiry", data.user.premiumExpiry);
+            }
+            if (data.user?.isPremium !== undefined) {
+                localStorage.setItem("isPremium", data.user.isPremium.toString());
+                updatePremium(data.user.isPremium, data.user.premiumExpiry);
+            }
 
             alert("✅ Signup successful! You got 2 days premium!");
-            router.push("chatlist"); // Next.js page navigation
-
-
-
+            setlogin(true);
         } catch (error) {
             console.error(error);
             alert("❌ Signup failed, please try again!");
@@ -91,72 +67,138 @@ export default function SignupPage() {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-black">
-            <div className="w-full max-w-md bg-gray-900 p-8 rounded-2xl shadow-lg">
-                <h1 className="text-3xl font-bold text-white text-center mb-6">
-                    Create Account
-                </h1>
+        <div className="container">
+            <div className="card">
+                <Image src="/login.jpg" alt="Logo" width={280} height={180} className="logo" />
+                <h1 className="title">Create Account</h1>
+                <p className="subtitle">Sign up to start chatting</p>
 
                 {/* Username */}
-                <input
-                    type="text"
-                    placeholder="Username"
-                    className="w-full p-3 mb-2 rounded bg-gray-800 text-white focus:outline-none"
-                    value={username}
-                    onChange={(e) => {
-                        setUsername(e.target.value);
-                        if (errors.username) setErrors((prev) => ({ ...prev, username: null }));
-                    }}
-                />
-                {errors.username && <p className="text-red-500 text-sm">{errors.username}</p>}
+                <div className="inputWrapper">
+                    <input
+                        type="text"
+                        placeholder="Username"
+                        value={username}
+                        onChange={(e) => {
+                            setUsername(e.target.value);
+                            if (errors.username) setErrors((prev) => ({ ...prev, username: null }));
+                        }}
+                    />
+                </div>
+                {errors.username && <p className="errorText">{errors.username}</p>}
 
                 {/* Password */}
-                <input
-                    type="password"
-                    placeholder="Password"
-                    className="w-full p-3 mb-2 rounded bg-gray-800 text-white focus:outline-none"
-                    value={password}
-                    onChange={(e) => {
-                        setPassword(e.target.value);
-                        if (errors.password) setErrors((prev) => ({ ...prev, password: null }));
-                    }}
-                />
-                {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+                <div className="inputWrapper">
+                    <input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => {
+                            setPassword(e.target.value);
+                            if (errors.password) setErrors((prev) => ({ ...prev, password: null }));
+                        }}
+                    />
+                    <button type="button" onClick={() => setShowPassword(!showPassword)}>
+                        {showPassword ? "Hide" : "Show"}
+                    </button>
+                </div>
+                {errors.password && <p className="errorText">{errors.password}</p>}
 
                 {/* Confirm Password */}
-                <input
-                    type="password"
-                    placeholder="Confirm Password"
-                    className="w-full p-3 mb-2 rounded bg-gray-800 text-white focus:outline-none"
-                    value={confirmPassword}
-                    onChange={(e) => {
-                        setConfirmPassword(e.target.value);
-                        if (errors.confirmPassword)
-                            setErrors((prev) => ({ ...prev, confirmPassword: null }));
-                    }}
-                />
-                {errors.confirmPassword && (
-                    <p className="text-red-500 text-sm">{errors.confirmPassword}</p>
-                )}
+                <div className="inputWrapper">
+                    <input
+                        type={showConfirmPassword ? "text" : "password"}
+                        placeholder="Confirm Password"
+                        value={confirmPassword}
+                        onChange={(e) => {
+                            setConfirmPassword(e.target.value);
+                            if (errors.confirmPassword) setErrors((prev) => ({ ...prev, confirmPassword: null }));
+                        }}
+                    />
+                    <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+                        {showConfirmPassword ? "Hide" : "Show"}
+                    </button>
+                </div>
+                {errors.confirmPassword && <p className="errorText">{errors.confirmPassword}</p>}
 
-                {/* Submit button */}
-                <button
-                    onClick={handleSignup}
-                    disabled={loading}
-                    className="w-full bg-white text-black py-3 rounded-lg font-bold mt-4 hover:bg-gray-300 disabled:opacity-60"
-                >
-                    {loading ? "Signing up..." : "Sign Up"}
+                {/* Signup Button */}
+                <button className="button" onClick={handleSignup} disabled={loading}>
+                    {loading ? "Loading..." : "Sign Up"}
                 </button>
 
-                {/* Login redirect */}
-                <button
-                    onClick={() => router.push("/login")}
-                    disabled={loading}
-                    className="w-full bg-gray-700 text-white py-3 rounded-lg font-bold mt-3 hover:bg-gray-600"
-                >
+                {/* Login Button */}
+                <button className="altButton" onClick={() => window.location.href = "/login"}>
                     Login
                 </button>
             </div>
+
+            <style jsx>{`
+        .container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          min-height: 100vh;
+          padding: 20px;
+        }
+        .card {
+          max-width: 380px;
+          width: 100%;
+          border-radius: 20px;
+          padding: 24px;
+          background-color: rgba(255, 255, 255, 0.9);
+          box-shadow: 0 8px 16px rgba(0,0,0,0.25);
+          text-align: center;
+        }
+        .logo {
+          border-radius: 20px;
+          margin-bottom: 16px;
+        }
+        .title { font-size: 28px; font-weight: 800; margin: 0; }
+        .subtitle { font-size: 14px; margin-bottom: 20px; }
+        .inputWrapper {
+          display: flex;
+          align-items: center;
+          margin-bottom: 16px;
+          border-radius: 12px;
+          border: 1px solid #ccc;
+          padding: 8px;
+        }
+        input {
+          flex: 1;
+          padding: 10px;
+          border: none;
+          outline: none;
+        }
+        button {
+          cursor: pointer;
+        }
+        .button {
+          background-color: #2563EB;
+          color: white;
+          width: 100%;
+          padding: 14px;
+          border-radius: 12px;
+          margin-top: 8px;
+          border: none;
+          font-weight: 700;
+        }
+        .altButton {
+          background-color: #fff;
+          color: #0F172A;
+          margin-top: 12px;
+          width: 100%;
+          padding: 14px;
+          border-radius: 12px;
+          border: 1px solid #ccc;
+          font-weight: 700;
+        }
+        .errorText {
+          color: #EF4444;
+          font-size: 13px;
+          text-align: left;
+          margin: -12px 0 8px 0;
+        }
+      `}</style>
         </div>
     );
 }

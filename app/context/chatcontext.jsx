@@ -3,12 +3,1340 @@
 
 
 
-"use client"; // ✅ must for client-side React hooks
+// // // // "use client"; // ✅ must for client-side React hooks
 
-export const dynamic = "force-dynamic";
+// // // // export const dynamic = "force-dynamic";
 
-import React, { createContext, useState, useEffect, useCallback } from "react";
-import socket from "../socket.js"; // ✅ your Socket.IO client instance
+// // // // import React, { createContext, useState, useEffect, useCallback } from "react";
+// // // // import socket from "../socket.js"; // ✅ your Socket.IO client instance
+
+// // // // export const ChatContext = createContext();
+
+// // // // export const ChatProvider = ({ children }) => {
+// // // //     const [myUsername, setMyUsername] = useState("");
+// // // //     const [messages, setMessages] = useState([]);
+// // // //     const [chatList, setChatList] = useState([]);
+// // // //     const [typingUser, setTypingUser] = useState(null);
+// // // //     const [Notification, setNotification] = useState(false)
+// // // //     const [pathname, setpath] = useState(null);
+// // // //     const [onlineUsers, setOnlineUsers] = useState([]);
+// // // //     const [deletedUsers, setDeletedUsers] = useState([]);
+// // // //     const [groupMessages, setGroupMessages] = useState([]); // { groupId: [msgs] }
+// // // //     // ✅ incoming call states
+// // // //     const [incomingCall, setIncomingCall] = useState(false);
+// // // //     const [incomingUser, setIncomingUser] = useState("");
+
+// // // //     // ✅ premium user
+// // // //     const [isPremium, setIsPremium] = useState(false);
+// // // //     const [premiumExpiry, setPremiumExpiry] = useState(null);
+
+// // // //     console.log('username', myUsername)
+
+// // // //     // ✅ UUID generator
+// // // //     const uuidv4 = () =>
+// // // //         "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+// // // //             const r = (Math.random() * 16) | 0;
+// // // //             const v = c === "x" ? r : (r & 0x3) | 0x8;
+// // // //             return v.toString(16);
+// // // //         });
+
+
+
+// // // //     // ✅ connect socket + restore user
+// // // //     useEffect(() => {
+// // // //         if (!socket.connected) socket.connect();
+// // // //         const name = localStorage.getItem("username");
+// // // //         if (name) setMyUsername(name);
+
+// // // //         console.log('userconenct now')
+// // // //     }, []);
+
+// // // //     // ✅ register username on socket
+// // // //     useEffect(() => {
+
+
+// // // //         if (!myUsername) return;
+
+// // // //         if (!socket.connected) socket.connect();
+// // // //         console.log('run setname user', myUsername)
+// // // //         socket.emit("setUsername", myUsername);
+
+// // // //         const savedList = localStorage.getItem(`chatlist_${myUsername}`);
+// // // //         const savedMsgs = localStorage.getItem(`messages_${myUsername}`);
+// // // //         const savedDeleted = localStorage.getItem(`deleted_${myUsername}`);
+
+// // // //         if (savedList) setChatList(JSON.parse(savedList));
+// // // //         if (savedMsgs) setMessages(JSON.parse(savedMsgs));
+// // // //         if (savedDeleted) setDeletedUsers(JSON.parse(savedDeleted));
+// // // //     }, [myUsername]);
+
+// // // //     // ✅ Online/offline sync
+// // // //     useEffect(() => {
+// // // //         socket.on("userStatus", ({ username, online }) => {
+// // // //             setOnlineUsers((prev) => {
+// // // //                 const filtered = prev.filter((u) => u !== username);
+// // // //                 return online ? [...filtered, username] : filtered;
+// // // //             });
+// // // //         });
+// // // //         return () => socket.off("userStatus");
+// // // //     }, []);
+
+// // // //     // ✅ Typing indicator
+// // // //     useEffect(() => {
+// // // //         socket.on("typing", ({ from }) => {
+// // // //             setTypingUser(from);
+// // // //             setTimeout(() => setTypingUser(null), 2000);
+// // // //         });
+// // // //         return () => socket.off("typing");
+// // // //     }, []);
+
+// // // //     // ✅ Handle incoming call
+// // // //     useEffect(() => {
+
+// // // //         console.log(groupMessages)
+// // // //         const handleIncomingCall = ({ from }) => {
+// // // //             console.log("📞 Incoming call from:", from);
+// // // //             setIncomingUser(from);
+// // // //             setIncomingCall(true);
+// // // //         };
+
+// // // //         const handleCallAccepted = ({ from }) => {
+// // // //             console.log("✅ Call accepted by:", from);
+// // // //         };
+
+// // // //         const handleCallRejected = ({ from }) => {
+// // // //             console.log("❌ Call rejected by:", from);
+// // // //             setIncomingCall(false);
+// // // //         };
+
+// // // //         const handleGroupMessage = (msg) => {
+// // // //             const groupId = msg.groupId || "default";
+
+// // // //             console.log(msg)// backend se aayega
+
+// // // //             setGroupMessages(prev => {
+// // // //                 const prevMsgs = prev[groupId] || [];
+// // // //                 return {
+// // // //                     ...prev,
+// // // //                     [groupId]: [...prevMsgs, msg]
+// // // //                 };
+// // // //             });
+// // // //         };
+
+
+
+// // // //         socket.on("incoming-call", handleIncomingCall);
+// // // //         socket.on("call-accepted", handleCallAccepted);
+// // // //         socket.on("call-rejected", handleCallRejected);
+// // // //         socket.on("groupmessage", handleGroupMessage);
+
+// // // //         // Cleanup
+// // // //         return () => {
+// // // //             socket.off("incoming-call", handleIncomingCall);
+// // // //             socket.off("call-accepted", handleCallAccepted);
+// // // //             socket.off("call-rejected", handleCallRejected);
+// // // //             socket.off("groupmessage", handleGroupMessage);
+
+// // // //         };
+// // // //     }, [socket]);
+
+// // // //     // useEffect(() => {
+// // // //     //     // make sure groupId is sent inside joinGroup()
+
+// // // //     //     socket.on("groupmessage", (msg) => {
+// // // //     //         console.log(msg);
+
+// // // //     //         setGroupMessages(msg.text)
+
+// // // //     //         console.log('staus this ', groupMessages)
+
+
+// // // //     //         // const groupId = msg.groupId || "default"; // ya server se aayega
+
+// // // //     //         // setGroupMessages((prev) => {
+// // // //     //         //     const prevMsgs = prev[groupId] || [];
+// // // //     //         //     return { ...prev, [groupId]: [...prevMsgs, msg] };
+// // // //     //         // });
+// // // //     //     });
+
+// // // //     //     return () => socket.off("groupmessage");
+// // // //     // }, []);
+
+
+
+// // // //     const joinGroup = (groupId) => {
+// // // //         socket.emit("joinGroup", { groupId, username: myUsername });
+// // // //     };
+
+// // // //     // ✅ Leave group
+// // // //     const leaveGroup = (groupId) => {
+// // // //         socket.emit("leaveGroup", { groupId, username: myUsername });
+// // // //         setGroupMessages((prev) => ({ ...prev, [groupId]: [] }));
+// // // //     };
+
+// // // //     const sendGroupMessage = (id, myUsername, input) => {
+
+
+// // // //         // if (!text) return;
+// // // //         socket.emit("groupMessage", { groupId: id, username: myUsername, text: input });
+// // // //         setGroupMessages((prev) => {
+// // // //             const prevMsgs = prev[id] || [];
+// // // //             return { ...prev, [id]: [...prevMsgs, { username: myUsername, input, timestamp: new Date().toISOString() }] };
+// // // //         });
+// // // //     };
+
+
+// // // //     // ✅ Handle incoming message
+// // // //     const handleIncomingMessage = useCallback(
+// // // //         (msg) => {
+// // // //             if (!msg.id) return;
+
+// // // //             const { from, to, message, type } = msg;
+// // // //             const otherUser = from === myUsername ? to : from;
+
+// // // //             if (deletedUsers.includes(otherUser)) return;
+
+// // // //             // save messages
+// // // //             setMessages((prev) => {
+// // // //                 if (prev.some((m) => m.id === msg.id)) return prev;
+// // // //                 const updated = [...prev, msg];
+// // // //                 localStorage.setItem(
+// // // //                     `messages_${myUsername}`,
+// // // //                     JSON.stringify(updated)
+// // // //                 );
+// // // //                 return updated;
+// // // //             });
+
+// // // //             // update chat list
+// // // //             setChatList((prev) => {
+// // // //                 const index = prev.findIndex((c) => c.adduser === otherUser);
+// // // //                 let updated;
+// // // //                 if (index !== -1) {
+// // // //                     updated = [...prev];
+// // // //                     updated[index] = {
+// // // //                         ...updated[index],
+// // // //                         lastMessage: type === "image" ? "📷 Photo" : message,
+// // // //                         unreadCount:
+// // // //                             from === myUsername ? 0 : (updated[index].unreadCount || 0) + 1,
+// // // //                     };
+// // // //                     const [moved] = updated.splice(index, 1);
+// // // //                     updated.unshift(moved);
+// // // //                 } else {
+// // // //                     updated = [
+// // // //                         {
+// // // //                             adduser: otherUser,
+// // // //                             lastMessage: type === "image" ? "📷 Photo" : message,
+// // // //                             unreadCount: from === myUsername ? 0 : 1,
+// // // //                         },
+// // // //                         ...prev,
+// // // //                     ];
+// // // //                 }
+// // // //                 localStorage.setItem(
+// // // //                     `chatlist_${myUsername}`,
+// // // //                     JSON.stringify(updated)
+// // // //                 );
+// // // //                 return updated;
+// // // //             });
+// // // //         },
+// // // //         [myUsername, deletedUsers]
+// // // //     );
+
+// // // //     // ✅ Listen to private messages
+// // // //     useEffect(() => {
+// // // //         if (!myUsername) return;
+// // // //         socket.on("privateMessage", handleIncomingMessage);
+// // // //         return () => socket.off("privateMessage", handleIncomingMessage);
+// // // //     }, [myUsername, handleIncomingMessage]);
+
+// // // //     // ✅ Send message
+// // // //     const sendMessage = (to, message, type = "text") => {
+// // // //         const payload = {
+// // // //             id: uuidv4(),
+// // // //             from: myUsername,
+// // // //             to,
+// // // //             message,
+// // // //             type,
+// // // //             timestamp: new Date().toISOString(),
+// // // //             seen: false,
+// // // //         };
+// // // //         socket.emit("sendMessage", payload);
+// // // //         handleIncomingMessage(payload);
+// // // //     };
+
+// // // //     // ✅ Start calling
+// // // //     const startCalling = (id) => {
+// // // //         socket.emit("call-user", { from: myUsername, to: id });
+// // // //     };
+
+
+// // // //     const apptesd = () => {
+
+// // // //         socket.emit("accept-call", { from: myUsername, to: incomingCall.from });
+// // // //     }
+
+// // // //     // ✅ Mark chat as read
+// // // //     const markChatAsRead = (otherUser) => {
+// // // //         setChatList((prev) => {
+// // // //             const updated = prev.map((item) =>
+// // // //                 item.adduser === otherUser ? { ...item, unreadCount: 0 } : item
+// // // //             );
+// // // //             localStorage.setItem(`chatlist_${myUsername}`, JSON.stringify(updated));
+// // // //             return updated;
+// // // //         });
+// // // //     };
+
+// // // //     // ✅ Delete chat
+// // // //     const addToDeletedUsers = (user) => {
+// // // //         setDeletedUsers((prev) => {
+// // // //             const updated = prev.includes(user) ? prev : [...prev, user];
+// // // //             localStorage.setItem(`deleted_${myUsername}`, JSON.stringify(updated));
+// // // //             return updated;
+// // // //         });
+// // // //     };
+
+// // // //     // ✅ Logout
+// // // //     const clearAll = () => {
+// // // //         setMyUsername("");
+// // // //         setMessages([]);
+// // // //         setChatList([]);
+// // // //         setTypingUser(null);
+// // // //         setOnlineUsers([]);
+// // // //         setDeletedUsers([]);
+// // // //         setIncomingCall(false);
+// // // //         setIncomingUser("");
+// // // //         setIsPremium(false);
+// // // //         localStorage.clear();
+// // // //     };
+
+// // // //     // ✅ Premium update
+// // // //     const updatePremium = (status, expiryDate) => {
+// // // //         setIsPremium(status);
+// // // //         if (status && expiryDate) {
+// // // //             localStorage.setItem("premiumExpiry", expiryDate);
+// // // //             setPremiumExpiry(expiryDate);
+// // // //         } else {
+// // // //             localStorage.removeItem("premiumExpiry");
+// // // //             setPremiumExpiry(null);
+// // // //         }
+// // // //     };
+
+// // // //     const visibleChats = chatList.filter(
+// // // //         (c) => !deletedUsers.includes(c.adduser)
+// // // //     );
+
+// // // //     return (
+// // // //         <ChatContext.Provider
+// // // //             value={{
+// // // //                 socket,
+// // // //                 myUsername,
+// // // //                 messages,
+// // // //                 visibleChats,
+// // // //                 typingUser,
+// // // //                 onlineUsers,
+// // // //                 deletedUsers,
+// // // //                 incomingCall,
+// // // //                 setIncomingCall,
+// // // //                 incomingUser,
+// // // //                 setIncomingUser,
+// // // //                 startCalling,
+// // // //                 sendMessage,
+// // // //                 markChatAsRead,
+// // // //                 Notification,
+// // // //                 setNotification,
+// // // //                 apptesd,
+// // // //                 addToDeletedUsers,
+// // // //                 setMyUsername,
+// // // //                 clearAll,
+// // // //                 isPremium,
+// // // //                 updatePremium,
+// // // //                 sendGroupMessage,
+// // // //                 joinGroup,
+
+// // // //                 groupMessages,
+// // // //                 premiumExpiry,
+// // // //                 setpath,
+// // // //                 pathname
+// // // //             }}
+// // // //         >
+// // // //             {children}
+// // // //         </ChatContext.Provider>
+// // // //     );
+// // // // };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// // // "use client"; // ✅ must for client-side React hooks
+// // // export const dynamic = "force-dynamic";
+
+// // // import React, { createContext, useState, useEffect, useCallback } from "react";
+// // // import socket from "../socket.js"; // ✅ your Socket.IO client instance
+
+// // // export const ChatContext = createContext();
+
+// // // export const ChatProvider = ({ children }) => {
+// // //     const [myUsername, setMyUsername] = useState("");
+// // //     const [messages, setMessages] = useState([]);
+// // //     const [chatList, setChatList] = useState([]);
+// // //     const [typingUser, setTypingUser] = useState(null);
+// // //     const [Notification, setNotification] = useState(false);
+// // //     const [pathname, setpath] = useState(null);
+// // //     const [onlineUsers, setOnlineUsers] = useState([]);
+// // //     const [deletedUsers, setDeletedUsers] = useState([]);
+// // //     const [groupMessages, setGroupMessages] = useState([]); // { groupId: [msgs] }
+// // //     const [incomingCall, setIncomingCall] = useState(false);
+// // //     const [incomingUser, setIncomingUser] = useState("");
+
+// // //     const [isPremium, setIsPremium] = useState(false);
+// // //     const [premiumExpiry, setPremiumExpiry] = useState(null);
+
+// // //     console.log("username", myUsername);
+
+// // //     // ✅ UUID generator
+// // //     const uuidv4 = () =>
+// // //         "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+// // //             const r = (Math.random() * 16) | 0;
+// // //             const v = c === "x" ? r : (r & 0x3) | 0x8;
+// // //             return v.toString(16);
+// // //         });
+
+// // //     // ✅ Connect socket + restore user
+// // //     useEffect(() => {
+// // //         if (!socket.connected) socket.connect();
+
+// // //         const name = localStorage.getItem("username");
+// // //         if (name) {
+// // //             setMyUsername(name);
+// // //         }
+
+// // //         // ⚡ जब भी socket दोबारा connect हो (auto reconnect), फिर से username emit करो
+// // //         socket.on("connect", () => {
+// // //             const savedName = localStorage.getItem("username");
+// // //             if (savedName) {
+// // //                 socket.emit("setUsername", savedName);
+// // //                 console.log("🟢 User online (auto reconnect):", savedName);
+// // //             }
+// // //         });
+
+// // //         return () => socket.off("connect");
+// // //     }, []);
+
+// // //     // ✅ Register username on socket
+// // //     useEffect(() => {
+// // //         if (!myUsername) return;
+// // //         if (!socket.connected) socket.connect();
+
+// // //         console.log("run setname user", myUsername);
+// // //         socket.emit("setUsername", myUsername);
+
+// // //         const savedList = localStorage.getItem(`chatlist_${myUsername}`);
+// // //         const savedMsgs = localStorage.getItem(`messages_${myUsername}`);
+// // //         const savedDeleted = localStorage.getItem(`deleted_${myUsername}`);
+
+// // //         if (savedList) setChatList(JSON.parse(savedList));
+// // //         if (savedMsgs) setMessages(JSON.parse(savedMsgs));
+// // //         if (savedDeleted) setDeletedUsers(JSON.parse(savedDeleted));
+// // //     }, [myUsername]);
+
+// // //     // ✅ Online/offline sync
+// // //     useEffect(() => {
+// // //         socket.on("userStatus", ({ username, online }) => {
+// // //             setOnlineUsers((prev) => {
+// // //                 const filtered = prev.filter((u) => u !== username);
+// // //                 return online ? [...filtered, username] : filtered;
+// // //             });
+// // //         });
+// // //         return () => socket.off("userStatus");
+// // //     }, []);
+
+// // //     // ✅ Typing indicator
+// // //     useEffect(() => {
+// // //         socket.on("typing", ({ from }) => {
+// // //             setTypingUser(from);
+// // //             setTimeout(() => setTypingUser(null), 2000);
+// // //         });
+// // //         return () => socket.off("typing");
+// // //     }, []);
+
+// // //     // ✅ Handle incoming call + group messages
+// // //     useEffect(() => {
+// // //         const handleIncomingCall = ({ from }) => {
+// // //             console.log("📞 Incoming call from:", from);
+// // //             setIncomingUser(from);
+// // //             setIncomingCall(true);
+// // //         };
+
+// // //         const handleCallAccepted = ({ from }) => {
+// // //             console.log("✅ Call accepted by:", from);
+// // //         };
+
+// // //         const handleCallRejected = ({ from }) => {
+// // //             console.log("❌ Call rejected by:", from);
+// // //             setIncomingCall(false);
+// // //         };
+
+// // //         const handleGroupMessage = (msg) => {
+// // //             const groupId = msg.groupId || "default";
+// // //             console.log("📨 Group Message:", msg);
+// // //             setGroupMessages((prev) => {
+// // //                 const prevMsgs = prev[groupId] || [];
+// // //                 return { ...prev, [groupId]: [...prevMsgs, msg] };
+// // //             });
+// // //         };
+
+// // //         socket.on("incoming-call", handleIncomingCall);
+// // //         socket.on("call-accepted", handleCallAccepted);
+// // //         socket.on("call-rejected", handleCallRejected);
+// // //         socket.on("groupmessage", handleGroupMessage);
+
+// // //         return () => {
+// // //             socket.off("incoming-call", handleIncomingCall);
+// // //             socket.off("call-accepted", handleCallAccepted);
+// // //             socket.off("call-rejected", handleCallRejected);
+// // //             socket.off("groupmessage", handleGroupMessage);
+// // //         };
+// // //     }, []);
+
+// // //     const joinGroup = (groupId) => {
+// // //         socket.emit("joinGroup", { groupId, username: myUsername });
+// // //     };
+
+// // //     const leaveGroup = (groupId) => {
+// // //         socket.emit("leaveGroup", { groupId, username: myUsername });
+// // //         setGroupMessages((prev) => ({ ...prev, [groupId]: [] }));
+// // //     };
+
+// // //     const sendGroupMessage = (id, myUsername, input) => {
+// // //         socket.emit("groupMessage", { groupId: id, username: myUsername, text: input });
+// // //         setGroupMessages((prev) => {
+// // //             const prevMsgs = prev[id] || [];
+// // //             return {
+// // //                 ...prev,
+// // //                 [id]: [
+// // //                     ...prevMsgs,
+// // //                     { username: myUsername, text: input, timestamp: new Date().toISOString() },
+// // //                 ],
+// // //             };
+// // //         });
+// // //     };
+
+// // //     // ✅ Handle incoming private messages
+// // //     const handleIncomingMessage = useCallback(
+// // //         (msg) => {
+// // //             if (!msg.id) return;
+// // //             const { from, to, message, type } = msg;
+// // //             const otherUser = from === myUsername ? to : from;
+
+// // //             if (deletedUsers.includes(otherUser)) return;
+
+// // //             setMessages((prev) => {
+// // //                 if (prev.some((m) => m.id === msg.id)) return prev;
+// // //                 const updated = [...prev, msg];
+// // //                 localStorage.setItem(`messages_${myUsername}`, JSON.stringify(updated));
+// // //                 return updated;
+// // //             });
+
+// // //             setChatList((prev) => {
+// // //                 const index = prev.findIndex((c) => c.adduser === otherUser);
+// // //                 let updated;
+// // //                 if (index !== -1) {
+// // //                     updated = [...prev];
+// // //                     updated[index] = {
+// // //                         ...updated[index],
+// // //                         lastMessage: type === "image" ? "📷 Photo" : message,
+// // //                         unreadCount:
+// // //                             from === myUsername ? 0 : (updated[index].unreadCount || 0) + 1,
+// // //                     };
+// // //                     const [moved] = updated.splice(index, 1);
+// // //                     updated.unshift(moved);
+// // //                 } else {
+// // //                     updated = [
+// // //                         {
+// // //                             adduser: otherUser,
+// // //                             lastMessage: type === "image" ? "📷 Photo" : message,
+// // //                             unreadCount: from === myUsername ? 0 : 1,
+// // //                         },
+// // //                         ...prev,
+// // //                     ];
+// // //                 }
+// // //                 localStorage.setItem(`chatlist_${myUsername}`, JSON.stringify(updated));
+// // //                 return updated;
+// // //             });
+// // //         },
+// // //         [myUsername, deletedUsers]
+// // //     );
+
+// // //     useEffect(() => {
+// // //         if (!myUsername) return;
+// // //         socket.on("privateMessage", handleIncomingMessage);
+// // //         return () => socket.off("privateMessage", handleIncomingMessage);
+// // //     }, [myUsername, handleIncomingMessage]);
+
+// // //     // ✅ Send message
+// // //     const sendMessage = (to, message, type = "text") => {
+// // //         const payload = {
+// // //             id: uuidv4(),
+// // //             from: myUsername,
+// // //             to,
+// // //             message,
+// // //             type,
+// // //             timestamp: new Date().toISOString(),
+// // //             seen: false,
+// // //         };
+// // //         socket.emit("sendMessage", payload);
+// // //         handleIncomingMessage(payload);
+// // //     };
+
+// // //     const startCalling = (id) => {
+// // //         socket.emit("call-user", { from: myUsername, to: id });
+// // //     };
+
+// // //     const apptesd = () => {
+// // //         socket.emit("accept-call", { from: myUsername, to: incomingCall.from });
+// // //     };
+
+// // //     const markChatAsRead = (otherUser) => {
+// // //         setChatList((prev) => {
+// // //             const updated = prev.map((item) =>
+// // //                 item.adduser === otherUser ? { ...item, unreadCount: 0 } : item
+// // //             );
+// // //             localStorage.setItem(`chatlist_${myUsername}`, JSON.stringify(updated));
+// // //             return updated;
+// // //         });
+// // //     };
+
+// // //     const addToDeletedUsers = (user) => {
+// // //         setDeletedUsers((prev) => {
+// // //             const updated = prev.includes(user) ? prev : [...prev, user];
+// // //             localStorage.setItem(`deleted_${myUsername}`, JSON.stringify(updated));
+// // //             return updated;
+// // //         });
+// // //     };
+
+// // //     const clearAll = () => {
+// // //         setMyUsername("");
+// // //         setMessages([]);
+// // //         setChatList([]);
+// // //         setTypingUser(null);
+// // //         setOnlineUsers([]);
+// // //         setDeletedUsers([]);
+// // //         setIncomingCall(false);
+// // //         setIncomingUser("");
+// // //         setIsPremium(false);
+// // //         localStorage.clear();
+// // //     };
+
+// // //     const updatePremium = (status, expiryDate) => {
+// // //         setIsPremium(status);
+// // //         if (status && expiryDate) {
+// // //             localStorage.setItem("premiumExpiry", expiryDate);
+// // //             setPremiumExpiry(expiryDate);
+// // //         } else {
+// // //             localStorage.removeItem("premiumExpiry");
+// // //             setPremiumExpiry(null);
+// // //         }
+// // //     };
+
+// // //     const visibleChats = chatList.filter(
+// // //         (c) => !deletedUsers.includes(c.adduser)
+// // //     );
+
+// // //     return (
+// // //         <ChatContext.Provider
+// // //             value={{
+// // //                 socket,
+// // //                 myUsername,
+// // //                 messages,
+// // //                 visibleChats,
+// // //                 typingUser,
+// // //                 onlineUsers,
+// // //                 deletedUsers,
+// // //                 incomingCall,
+// // //                 setIncomingCall,
+// // //                 incomingUser,
+// // //                 setIncomingUser,
+// // //                 startCalling,
+// // //                 sendMessage,
+// // //                 markChatAsRead,
+// // //                 Notification,
+// // //                 setNotification,
+// // //                 apptesd,
+// // //                 addToDeletedUsers,
+// // //                 setMyUsername,
+// // //                 clearAll,
+// // //                 isPremium,
+// // //                 updatePremium,
+// // //                 sendGroupMessage,
+// // //                 joinGroup,
+// // //                 groupMessages,
+// // //                 premiumExpiry,
+// // //                 setpath,
+// // //                 pathname,
+// // //             }}
+// // //         >
+// // //             {children}
+// // //         </ChatContext.Provider>
+// // //     );
+// // // };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// // "use client";
+
+// // import React, { createContext, useState, useEffect, useCallback } from "react";
+// // import socket from "../socket";
+// // import api from "../apicall";
+
+
+// // // Initialize Socket.IO client
+
+// // export const ChatContext = createContext();
+
+// // export const ChatProvider = ({ children }) => {
+// //     const [myUsername, setMyUsername] = useState("");
+// //     const [messages, setMessages] = useState([]);
+// //     const [chatList, setChatList] = useState([]);
+// //     const [typingUser, setTypingUser] = useState(null);
+// //     const [onlineUsers, setOnlineUsers] = useState([]);
+// //     const [deletedUsers, setDeletedUsers] = useState([]);
+// //     const [isPremium, setIsPremium] = useState(false);
+// //     const [premiumExpiry, setPremiumExpiry] = useState(null);
+// //     const [login, setLogin] = useState(false);
+// //     const [incomingCall, setIncomingCall] = useState(false);
+// //     const [incomingUser, setIncomingUser] = useState("");
+// //     const [acceptedCall, setAcceptedCall] = useState(false);
+// //     const [groupMessages, setGroupMessages] = useState({});
+// //     const [userdata, setUserdata] = useState(null);
+
+// //     // UUID generator
+// //     const uuidv4 = () =>
+// //         "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+// //             const r = Math.random() * 16 | 0;
+// //             const v = c === "x" ? r : (r & 0x3 | 0x8);
+// //             return v.toString(16);
+// //         });
+
+// //     // Load username from localStorage and connect socket
+// //     useEffect(() => {
+// //         if (!socket.connected) socket.connect();
+// //         const name = localStorage.getItem("username");
+// //         if (name) {
+// //             setMyUsername(name);
+// //             setLogin(true);
+// //         }
+// //     }, []);
+
+// //     // Register username on socket
+// //     useEffect(() => {
+// //         if (!myUsername) return;
+// //         if (!socket.connected) socket.connect();
+// //         socket.emit("setUsername", myUsername);
+
+// //         // Load messages, chats, deleted users from localStorage
+// //         const savedList = localStorage.getItem(`chatlist_${myUsername}`);
+// //         const savedMsgs = localStorage.getItem(`messages_${myUsername}`);
+// //         const savedDeleted = localStorage.getItem(`deleted_${myUsername}`);
+
+// //         if (savedList) setChatList(JSON.parse(savedList));
+// //         if (savedMsgs) setMessages(JSON.parse(savedMsgs));
+// //         if (savedDeleted) setDeletedUsers(JSON.parse(savedDeleted));
+// //     }, [myUsername]);
+
+// //     // Fetch user data from API
+// //     useEffect(() => {
+// //         const fetchUserData = async () => {
+// //             try {
+// //                 const username = localStorage.getItem("username");
+// //                 if (!username) return;
+
+// //                 const res = await api.post("/userdata", { myUsername: username });
+// //                 const user = res.data.dta;
+
+// //                 setUserdata(user);
+// //                 setMyUsername(username);
+// //                 localStorage.setItem("userdata", JSON.stringify(user));
+
+// //                 if (user.isPremium || user.premium) {
+// //                     setIsPremium(true);
+// //                     localStorage.setItem("isPremium", "true");
+// //                     if (user.premiumExpiry) {
+// //                         setPremiumExpiry(user.premiumExpiry);
+// //                         localStorage.setItem("premiumExpiry", user.premiumExpiry);
+// //                     }
+// //                 } else {
+// //                     setIsPremium(false);
+// //                     setPremiumExpiry(null);
+// //                     localStorage.setItem("isPremium", "false");
+// //                     localStorage.removeItem("premiumExpiry");
+// //                 }
+// //             } catch (err) {
+// //                 console.error("Error fetching user:", err.message);
+// //             }
+// //         };
+// //         fetchUserData();
+// //     }, []);
+
+// //     // Typing indicator
+// //     useEffect(() => {
+// //         socket.on("typing", ({ from }) => {
+// //             setTypingUser(from);
+// //             setTimeout(() => setTypingUser(null), 2000);
+// //         });
+// //         return () => socket.off("typing");
+// //     }, []);
+
+// //     // Online/offline status
+// //     useEffect(() => {
+// //         socket.on("userStatus", ({ username, online }) => {
+// //             setOnlineUsers((prev) => {
+// //                 const filtered = prev.filter((u) => u !== username);
+// //                 return online ? [...filtered, username] : filtered;
+// //             });
+// //         });
+// //         return () => socket.off("userStatus");
+// //     }, []);
+
+// //     // Incoming call
+// //     useEffect(() => {
+// //         const handleIncomingCall = ({ from }) => {
+// //             setIncomingUser(from);
+// //             setIncomingCall(true);
+// //         };
+// //         const handleCallAccepted = () => setAcceptedCall(true);
+// //         const handleCallRejected = () => setIncomingCall(false);
+
+// //         socket.on("incoming-call", handleIncomingCall);
+// //         socket.on("call-accepted", handleCallAccepted);
+// //         socket.on("call-rejected", handleCallRejected);
+
+// //         return () => {
+// //             socket.off("incoming-call", handleIncomingCall);
+// //             socket.off("call-accepted", handleCallAccepted);
+// //             socket.off("call-rejected", handleCallRejected);
+// //         };
+// //     }, []);
+
+// //     // Handle incoming private messages
+// //     const handleIncomingMessage = useCallback(
+// //         (msg) => {
+// //             if (!msg.id) return;
+// //             const { from, to, message, type } = msg;
+// //             const otherUser = from === myUsername ? to : from;
+
+// //             setDeletedUsers((prev) => {
+// //                 if (prev.includes(otherUser)) {
+// //                     const updated = prev.filter((u) => u !== otherUser);
+// //                     localStorage.setItem(`deleted_${myUsername}`, JSON.stringify(updated));
+// //                     return updated;
+// //                 }
+// //                 return prev;
+// //             });
+
+// //             setMessages((prev) => {
+// //                 if (prev.some((m) => m.id === msg.id)) return prev;
+// //                 const updated = [...prev, msg];
+// //                 localStorage.setItem(`messages_${myUsername}`, JSON.stringify(updated));
+// //                 return updated;
+// //             });
+
+// //             setChatList((prev) => {
+// //                 const index = prev.findIndex((c) => c.adduser === otherUser);
+// //                 let updated;
+// //                 if (index !== -1) {
+// //                     updated = [...prev];
+// //                     updated[index] = {
+// //                         ...updated[index],
+// //                         lastMessage: type === "image" ? "📷 Photo" : message,
+// //                         unreadCount: from === myUsername ? 0 : (updated[index].unreadCount || 0) + 1,
+// //                     };
+// //                     const [moved] = updated.splice(index, 1);
+// //                     updated.unshift(moved);
+// //                 } else {
+// //                     updated = [
+// //                         { adduser: otherUser, lastMessage: type === "image" ? "📷 Photo" : message, unreadCount: from === myUsername ? 0 : 1 },
+// //                         ...prev,
+// //                     ];
+// //                 }
+// //                 localStorage.setItem(`chatlist_${myUsername}`, JSON.stringify(updated));
+// //                 return updated;
+// //             });
+// //         },
+// //         [myUsername]
+// //     );
+
+// //     useEffect(() => {
+// //         if (!myUsername) return;
+// //         socket.on("privateMessage", handleIncomingMessage);
+// //         return () => socket.off("privateMessage", handleIncomingMessage);
+// //     }, [myUsername, handleIncomingMessage]);
+
+// //     // Send private message
+// //     const sendMessage = (to, message, type = "text") => {
+// //         const payload = {
+// //             id: uuidv4(),
+// //             from: myUsername,
+// //             to,
+// //             message,
+// //             type,
+// //             timestamp: new Date().toISOString(),
+// //             seen: false,
+// //         };
+// //         socket.emit("sendMessage", payload);
+// //         handleIncomingMessage(payload);
+// //     };
+
+// //     // Group messages
+// //     const sendGroupMessage = (groupId, username, text, type = "text") => {
+// //         const payload = { groupId, username, message: text, type, timestamp: new Date().toISOString() };
+// //         socket.emit("groupMessage", payload);
+// //         setGroupMessages((prev) => {
+// //             const prevMsgs = prev[groupId] || [];
+// //             return { ...prev, [groupId]: [...prevMsgs, payload] };
+// //         });
+// //     };
+
+// //     const joinGroup = (groupId) => socket.emit("joinGroup", { groupId, username: myUsername });
+// //     const leaveGroup = (groupId) => {
+// //         socket.emit("leaveGroup", { groupId, username: myUsername });
+// //         setGroupMessages((prev) => ({ ...prev, [groupId]: [] }));
+// //     };
+
+// //     const markChatAsRead = (otherUser) => {
+// //         setChatList((prev) => {
+// //             const updated = prev.map((item) => (item.adduser === otherUser ? { ...item, unreadCount: 0 } : item));
+// //             localStorage.setItem(`chatlist_${myUsername}`, JSON.stringify(updated));
+// //             return updated;
+// //         });
+// //     };
+
+// //     const addToDeletedUsers = (user) => {
+// //         setDeletedUsers((prev) => {
+// //             const updated = prev.includes(user) ? prev : [...prev, user];
+// //             localStorage.setItem(`deleted_${myUsername}`, JSON.stringify(updated));
+// //             return updated;
+// //         });
+// //     };
+
+// //     const clearAll = () => {
+// //         setMyUsername("");
+// //         setMessages([]);
+// //         setChatList([]);
+// //         setTypingUser(null);
+// //         setOnlineUsers([]);
+// //         setDeletedUsers([]);
+// //         setIsPremium(false);
+// //         localStorage.clear();
+// //     };
+
+// //     const updatePremium = (status, expiryDate) => {
+// //         setIsPremium(status);
+// //         localStorage.setItem("isPremium", status ? "true" : "false");
+// //         if (status && expiryDate) {
+// //             setPremiumExpiry(expiryDate);
+// //             localStorage.setItem("premiumExpiry", expiryDate);
+// //         } else {
+// //             setPremiumExpiry(null);
+// //             localStorage.removeItem("premiumExpiry");
+// //         }
+// //     };
+
+// //     const visibleChats = chatList.filter((c) => !deletedUsers.includes(c.adduser));
+
+// //     return (
+// //         <ChatContext.Provider
+// //             value={{
+// //                 socket,
+// //                 myUsername,
+// //                 messages,
+// //                 visibleChats,
+// //                 typingUser,
+// //                 onlineUsers,
+// //                 deletedUsers,
+// //                 sendMessage,
+// //                 markChatAsRead,
+// //                 addToDeletedUsers,
+// //                 setMyUsername,
+// //                 clearAll,
+// //                 isPremium,
+// //                 updatePremium,
+// //                 incomingUser,
+// //                 incomingCall,
+// //                 acceptedCall,
+// //                 premiumExpiry,
+// //                 groupMessages,
+// //                 joinGroup,
+// //                 sendGroupMessage,
+// //                 login,
+// //                 setLogin,
+// //                 leaveGroup,
+// //             }}
+// //         >
+// //             {children}
+// //         </ChatContext.Provider>
+// //     );
+// // };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// "use client";
+
+// import React, { createContext, useState, useEffect, useCallback, useRef } from "react";
+// import socket from "../socket";
+// import api from "../apicall";
+
+// export const ChatContext = createContext();
+
+// export const ChatProvider = ({ children }) => {
+//     const [myUsername, setMyUsername] = useState("");
+//     const [messages, setMessages] = useState([]);
+//     const [chatList, setChatList] = useState([]);
+//     const [typingUser, setTypingUser] = useState(null);
+//     const [onlineUsers, setOnlineUsers] = useState([]);
+//     const [deletedUsers, setDeletedUsers] = useState([]);
+//     const [isPremium, setIsPremium] = useState(false);
+//     const [premiumExpiry, setPremiumExpiry] = useState(null);
+//     const [login, setLogin] = useState(false);
+//     const [activeChatRoom, setActiveChatRoom] = useState(false);
+//     const [incomingCall, setIncomingCall] = useState(false);
+//     const [incomingUser, setIncomingUser] = useState("");
+//     const [acceptedCall, setAcceptedCall] = useState(false);
+//     const [groupMessages, setGroupMessages] = useState({});
+//     const [userdata, setUserdata] = useState(null);
+
+//     const typingTimeoutRef = useRef(null);
+
+//     // UUID generator
+//     const uuidv4 = () =>
+//         "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+//             const r = Math.random() * 16 | 0;
+//             const v = c === "x" ? r : (r & 0x3 | 0x8);
+//             return v.toString(16);
+//         });
+
+//     // Initialize user and socket
+//     useEffect(() => {
+//         if (!socket.connected) socket.connect();
+
+//         const name = localStorage.getItem("username");
+//         if (name) {
+//             setMyUsername(name);
+//             setLogin(true);
+//             socket.emit("setUsername", name);
+
+//             try {
+//                 const savedList = JSON.parse(localStorage.getItem(`chatlist_${name}`)) || [];
+//                 const savedMsgs = JSON.parse(localStorage.getItem(`messages_${name}`)) || [];
+//                 const savedDeleted = JSON.parse(localStorage.getItem(`deleted_${name}`)) || [];
+//                 setChatList(savedList);
+//                 setMessages(savedMsgs);
+//                 setDeletedUsers(savedDeleted);
+//             } catch (err) {
+//                 console.error("LocalStorage parsing error:", err);
+//             }
+//         }
+//     }, []);
+
+//     // Fetch userdata from API
+//     useEffect(() => {
+//         const fetchUserData = async () => {
+//             const username = localStorage.getItem("username");
+//             if (!username) return;
+
+//             try {
+//                 const res = await api.post("/userdata", { myUsername: username });
+//                 const user = res.data.dta;
+//                 setUserdata(user);
+//                 setMyUsername(username);
+//                 localStorage.setItem("userdata", JSON.stringify(user));
+
+//                 if (user.isPremium || user.premium) {
+//                     setIsPremium(true);
+//                     localStorage.setItem("isPremium", "true");
+//                     if (user.premiumExpiry) {
+//                         setPremiumExpiry(user.premiumExpiry);
+//                         localStorage.setItem("premiumExpiry", user.premiumExpiry);
+//                     }
+//                 } else {
+//                     setIsPremium(false);
+//                     setPremiumExpiry(null);
+//                     localStorage.setItem("isPremium", "false");
+//                     localStorage.removeItem("premiumExpiry");
+//                 }
+//             } catch (err) {
+//                 console.error("Error fetching user:", err.message);
+//             }
+//         };
+//         fetchUserData();
+//     }, []);
+
+//     // Typing indicator
+//     useEffect(() => {
+//         const handleTyping = ({ from }) => {
+//             setTypingUser(from);
+//             if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+//             typingTimeoutRef.current = setTimeout(() => setTypingUser(null), 2000);
+//         };
+//         socket.on("typing", handleTyping);
+//         return () => socket.off("typing", handleTyping);
+//     }, []);
+
+//     // Online/offline status
+//     useEffect(() => {
+//         const handleStatus = ({ username, online }) => {
+//             setOnlineUsers((prev) => {
+//                 const filtered = prev.filter((u) => u !== username);
+//                 return online ? [...filtered, username] : filtered;
+//             });
+//         };
+//         socket.on("userStatus", handleStatus);
+//         return () => socket.off("userStatus", handleStatus);
+//     }, []);
+
+//     // Incoming call
+//     useEffect(() => {
+//         const handleIncomingCall = ({ from }) => {
+//             setIncomingUser(from);
+//             setIncomingCall(true);
+//         };
+//         const handleCallAccepted = () => setAcceptedCall(true);
+//         const handleCallRejected = () => setIncomingCall(false);
+
+//         socket.on("incoming-call", handleIncomingCall);
+//         socket.on("call-accepted", handleCallAccepted);
+//         socket.on("call-rejected", handleCallRejected);
+
+//         return () => {
+//             socket.off("incoming-call", handleIncomingCall);
+//             socket.off("call-accepted", handleCallAccepted);
+//             socket.off("call-rejected", handleCallRejected);
+//         };
+//     }, []);
+
+//     // Handle incoming private messages
+//     const handleIncomingMessage = useCallback((msg) => {
+//         if (!msg.id) return;
+//         const { from, to, message, type } = msg;
+//         const otherUser = from === myUsername ? to : from;
+
+//         setDeletedUsers((prev) => {
+//             if (prev.includes(otherUser)) {
+//                 const updated = prev.filter((u) => u !== otherUser);
+//                 localStorage.setItem(`deleted_${myUsername}`, JSON.stringify(updated));
+//                 return updated;
+//             }
+//             return prev;
+//         });
+
+//         setMessages((prev) => {
+//             if (prev.some((m) => m.id === msg.id)) return prev;
+//             const updated = [...prev, msg];
+//             localStorage.setItem(`messages_${myUsername}`, JSON.stringify(updated));
+//             return updated;
+//         });
+
+//         setChatList((prev) => {
+//             const index = prev.findIndex((c) => c.adduser === otherUser);
+//             let updated;
+//             if (index !== -1) {
+//                 updated = [...prev];
+//                 updated[index] = {
+//                     ...updated[index],
+//                     lastMessage: type === "image" ? "📷 Photo" : message,
+//                     unreadCount: from === myUsername ? 0 : (updated[index].unreadCount || 0) + 1,
+//                 };
+//                 const [moved] = updated.splice(index, 1);
+//                 updated.unshift(moved);
+//             } else {
+//                 updated = [
+//                     { adduser: otherUser, lastMessage: type === "image" ? "📷 Photo" : message, unreadCount: from === myUsername ? 0 : 1 },
+//                     ...prev,
+//                 ];
+//             }
+//             localStorage.setItem(`chatlist_${myUsername}`, JSON.stringify(updated));
+//             return updated;
+//         });
+//     }, [myUsername]);
+
+//     useEffect(() => {
+//         if (!myUsername) return;
+//         socket.on("privateMessage", handleIncomingMessage);
+//         return () => socket.off("privateMessage", handleIncomingMessage);
+//     }, [myUsername, handleIncomingMessage]);
+
+//     // Send private message
+//     const sendMessage = (to, message, type = "text") => {
+//         const payload = {
+//             id: uuidv4(),
+//             from: myUsername,
+//             to,
+//             message,
+//             type,
+//             timestamp: new Date().toISOString(),
+//             seen: false,
+//         };
+//         socket.emit("sendMessage", payload);
+//         handleIncomingMessage(payload);
+//     };
+
+//     // Group messages
+//     const sendGroupMessage = (groupId, username, text, type = "text") => {
+//         const payload = { groupId, username, message: text, type, timestamp: new Date().toISOString() };
+//         socket.emit("groupMessage", payload);
+//         setGroupMessages((prev) => {
+//             const prevMsgs = prev[groupId] || [];
+//             return { ...prev, [groupId]: [...prevMsgs, payload] };
+//         });
+//     };
+
+//     const joinGroup = (groupId) => socket.emit("joinGroup", { groupId, username: myUsername });
+//     const leaveGroup = (groupId) => {
+//         socket.emit("leaveGroup", { groupId, username: myUsername });
+//         setGroupMessages((prev) => ({ ...prev, [groupId]: [] }));
+//     };
+
+//     const markChatAsRead = (otherUser) => {
+//         setChatList((prev) => {
+//             const updated = prev.map((item) => (item.adduser === otherUser ? { ...item, unreadCount: 0 } : item));
+//             localStorage.setItem(`chatlist_${myUsername}`, JSON.stringify(updated));
+//             return updated;
+//         });
+//     };
+
+//     const addToDeletedUsers = (user) => {
+//         setDeletedUsers((prev) => {
+//             const updated = prev.includes(user) ? prev : [...prev, user];
+//             localStorage.setItem(`deleted_${myUsername}`, JSON.stringify(updated));
+//             return updated;
+//         });
+//     };
+
+//     const clearAll = () => {
+//         setMyUsername("");
+//         setMessages([]);
+//         setChatList([]);
+//         setTypingUser(null);
+//         setOnlineUsers([]);
+//         setDeletedUsers([]);
+//         setIsPremium(false);
+//         localStorage.clear();
+//     };
+
+//     const updatePremium = (status, expiryDate) => {
+//         setIsPremium(status);
+//         localStorage.setItem("isPremium", status ? "true" : "false");
+//         if (status && expiryDate) {
+//             setPremiumExpiry(expiryDate);
+//             localStorage.setItem("premiumExpiry", expiryDate);
+//         } else {
+//             setPremiumExpiry(null);
+//             localStorage.removeItem("premiumExpiry");
+//         }
+//     };
+
+//     const visibleChats = chatList.filter((c) => !deletedUsers.includes(c.adduser));
+
+//     return (
+//         <ChatContext.Provider
+//             value={{
+//                 socket,
+//                 myUsername,
+//                 messages,
+//                 visibleChats,
+//                 typingUser,
+//                 onlineUsers,
+//                 deletedUsers,
+//                 sendMessage,
+//                 markChatAsRead,
+//                 addToDeletedUsers,
+//                 setMyUsername,
+//                 clearAll,
+//                 isPremium,
+//                 updatePremium,
+//                 incomingUser,
+//                 incomingCall,
+//                 acceptedCall,
+//                 premiumExpiry,
+//                 groupMessages,
+//                 joinGroup,
+//                 sendGroupMessage,
+//                 activeChatRoom,       // <-- add this
+//                 setActiveChatRoom,
+//                 login,
+//                 setLogin,
+//                 leaveGroup,
+//             }}
+//         >
+//             {children}
+//         </ChatContext.Provider>
+//     );
+// };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"use client";
+
+import React, { createContext, useState, useEffect, useCallback, useRef } from "react";
+import socket from "../socket";
+import api from "../apicall";
 
 export const ChatContext = createContext();
 
@@ -17,231 +1345,215 @@ export const ChatProvider = ({ children }) => {
     const [messages, setMessages] = useState([]);
     const [chatList, setChatList] = useState([]);
     const [typingUser, setTypingUser] = useState(null);
-    const [pathname, setpath] = useState(null);
     const [onlineUsers, setOnlineUsers] = useState([]);
     const [deletedUsers, setDeletedUsers] = useState([]);
-    const [groupMessages, setGroupMessages] = useState([]); // { groupId: [msgs] }
-    // ✅ incoming call states
-    const [incomingCall, setIncomingCall] = useState(false);
-    const [incomingUser, setIncomingUser] = useState("");
-
-    // ✅ premium user
     const [isPremium, setIsPremium] = useState(false);
     const [premiumExpiry, setPremiumExpiry] = useState(null);
+    const [login, setLogin] = useState(false);
+    const [activeChatRoom, setActiveChatRoom] = useState(false);
+    const [incomingCall, setIncomingCall] = useState(false);
+    const [incomingUser, setIncomingUser] = useState("");
+    const [acceptedCall, setAcceptedCall] = useState(false);
+    const [groupMessages, setGroupMessages] = useState({});
+    const [userdata, setUserdata] = useState(null);
+
+    const typingTimeoutRef = useRef(null);
 
     // ✅ UUID generator
     const uuidv4 = () =>
         "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
-            const r = (Math.random() * 16) | 0;
-            const v = c === "x" ? r : (r & 0x3) | 0x8;
+            const r = Math.random() * 16 | 0;
+            const v = c === "x" ? r : (r & 0x3 | 0x8);
             return v.toString(16);
         });
 
-    // ✅ connect socket + restore user
+    // ✅ Initialize user and socket
     useEffect(() => {
         if (!socket.connected) socket.connect();
+
         const name = localStorage.getItem("username");
-        if (name) setMyUsername(name);
+        if (name) {
+            setMyUsername(name);
+            setLogin(true);
+            socket.emit("setUsername", name);
+
+            try {
+                const savedList = JSON.parse(localStorage.getItem(`chatlist_${name}`)) || [];
+                const savedMsgs = JSON.parse(localStorage.getItem(`messages_${name}`)) || [];
+                const savedDeleted = JSON.parse(localStorage.getItem(`deleted_${name}`)) || [];
+                setChatList(savedList);
+                setMessages(savedMsgs);
+                setDeletedUsers(savedDeleted);
+            } catch (err) {
+                console.error("LocalStorage parsing error:", err);
+            }
+        }
     }, []);
 
-    // ✅ register username on socket
+    // ✅ Fetch userdata from API
     useEffect(() => {
+        const fetchUserData = async () => {
+            const username = localStorage.getItem("username");
+            if (!username) return;
 
+            try {
+                const res = await api.post("/userdata", { myUsername: username });
+                const user = res.data.dta;
+                setUserdata(user);
+                setMyUsername(username);
+                localStorage.setItem("userdata", JSON.stringify(user));
 
-        if (!myUsername) return;
-
-        if (!socket.connected) socket.connect();
-        console.log('run setname user', myUsername)
-        socket.emit("setUsername", myUsername);
-
-        const savedList = localStorage.getItem(`chatlist_${myUsername}`);
-        const savedMsgs = localStorage.getItem(`messages_${myUsername}`);
-        const savedDeleted = localStorage.getItem(`deleted_${myUsername}`);
-
-        if (savedList) setChatList(JSON.parse(savedList));
-        if (savedMsgs) setMessages(JSON.parse(savedMsgs));
-        if (savedDeleted) setDeletedUsers(JSON.parse(savedDeleted));
-    }, [myUsername]);
-
-    // ✅ Online/offline sync
-    useEffect(() => {
-        socket.on("userStatus", ({ username, online }) => {
-            setOnlineUsers((prev) => {
-                const filtered = prev.filter((u) => u !== username);
-                return online ? [...filtered, username] : filtered;
-            });
-        });
-        return () => socket.off("userStatus");
+                if (user.isPremium || user.premium) {
+                    setIsPremium(true);
+                    localStorage.setItem("isPremium", "true");
+                    if (user.premiumExpiry) {
+                        setPremiumExpiry(user.premiumExpiry);
+                        localStorage.setItem("premiumExpiry", user.premiumExpiry);
+                    }
+                } else {
+                    setIsPremium(false);
+                    setPremiumExpiry(null);
+                    localStorage.setItem("isPremium", "false");
+                    localStorage.removeItem("premiumExpiry");
+                }
+            } catch (err) {
+                console.error("Error fetching user:", err.message);
+            }
+        };
+        fetchUserData();
     }, []);
 
     // ✅ Typing indicator
     useEffect(() => {
-        socket.on("typing", ({ from }) => {
+        const handleTyping = ({ from }) => {
             setTypingUser(from);
-            setTimeout(() => setTypingUser(null), 2000);
-        });
-        return () => socket.off("typing");
+            if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+            typingTimeoutRef.current = setTimeout(() => setTypingUser(null), 2000);
+        };
+        socket.on("typing", handleTyping);
+        return () => socket.off("typing", handleTyping);
     }, []);
 
-    // ✅ Handle incoming call
+    // ✅ Online/offline status
     useEffect(() => {
+        const handleStatus = ({ username, online }) => {
+            setOnlineUsers((prev) => {
+                const filtered = prev.filter((u) => u !== username);
+                return online ? [...filtered, username] : filtered;
+            });
+        };
+        socket.on("userStatus", handleStatus);
+        return () => socket.off("userStatus", handleStatus);
+    }, []);
 
-        console.log(groupMessages)
+    // ✅ Incoming call listeners
+    useEffect(() => {
         const handleIncomingCall = ({ from }) => {
-            console.log("📞 Incoming call from:", from);
+            console.log("📞 Incoming call from:", JSON.stringify(from));
             setIncomingUser(from);
             setIncomingCall(true);
         };
 
         const handleCallAccepted = ({ from }) => {
             console.log("✅ Call accepted by:", from);
-        };
-
-        const handleCallRejected = ({ from }) => {
-            console.log("❌ Call rejected by:", from);
+            setAcceptedCall(true);
             setIncomingCall(false);
         };
 
-        const handleGroupMessage = (msg) => {
-            const groupId = msg.groupId || "default";
-
-            console.log(msg)// backend se aayega
-
-            setGroupMessages(prev => {
-                const prevMsgs = prev[groupId] || [];
-                return {
-                    ...prev,
-                    [groupId]: [...prevMsgs, msg]
-                };
-            });
+        const handleCallRejected = ({ from }) => {
+            console.log("❌ Call rejected bbby:");
+            setIncomingCall(false);
+            setAcceptedCall(false);
         };
-
-
 
         socket.on("incoming-call", handleIncomingCall);
         socket.on("call-accepted", handleCallAccepted);
         socket.on("call-rejected", handleCallRejected);
-        socket.on("groupmessage", handleGroupMessage);
 
-        // Cleanup
         return () => {
             socket.off("incoming-call", handleIncomingCall);
             socket.off("call-accepted", handleCallAccepted);
             socket.off("call-rejected", handleCallRejected);
-            socket.off("groupmessage", handleGroupMessage);
-
         };
-    }, [socket]);
+    }, []);
 
-    // useEffect(() => {
-    //     // make sure groupId is sent inside joinGroup()
-
-    //     socket.on("groupmessage", (msg) => {
-    //         console.log(msg);
-
-    //         setGroupMessages(msg.text)
-
-    //         console.log('staus this ', groupMessages)
-
-
-    //         // const groupId = msg.groupId || "default"; // ya server se aayega
-
-    //         // setGroupMessages((prev) => {
-    //         //     const prevMsgs = prev[groupId] || [];
-    //         //     return { ...prev, [groupId]: [...prevMsgs, msg] };
-    //         // });
-    //     });
-
-    //     return () => socket.off("groupmessage");
-    // }, []);
-
-
-
-    const joinGroup = (groupId) => {
-        socket.emit("joinGroup", { groupId, username: myUsername });
+    // ✅ Emit when user clicks video call
+    const callUser = (to) => {
+        if (!to || !myUsername) return;
+        console.log("📤 Calling user:", to);
+        socket.emit("call-user", { from: myUsername, to });
     };
 
-    // ✅ Leave group
-    const leaveGroup = (groupId) => {
-        socket.emit("leaveGroup", { groupId, username: myUsername });
-        setGroupMessages((prev) => ({ ...prev, [groupId]: [] }));
+    // ✅ Accept call
+    const acceptCall = (from) => {
+        if (!from || !myUsername) return;
+        console.log("✅ Accepting call from:", from);
+        socket.emit("accept-call", { from, to: myUsername });
+        setIncomingCall(false);
+        setAcceptedCall(true);
     };
 
-    const sendGroupMessage = (id, myUsername, input) => {
+    // ✅ Reject call
+    const rejectCall = (from) => {
+        if (!from || !myUsername) return;
+        console.log("❌ Rejecting call from:", from);
+        socket.emit("reject-call", { from, to: myUsername });
+        setIncomingCall(false);
+        setAcceptedCall(false);
+    };
 
+    // ✅ Handle incoming private messages
+    const handleIncomingMessage = useCallback((msg) => {
+        if (!msg.id) return;
+        const { from, to, message, type } = msg;
+        const otherUser = from === myUsername ? to : from;
 
-        // if (!text) return;
-        socket.emit("groupMessage", { groupId: id, username: myUsername, text: input });
-        setGroupMessages((prev) => {
-            const prevMsgs = prev[id] || [];
-            return { ...prev, [id]: [...prevMsgs, { username: myUsername, input, timestamp: new Date().toISOString() }] };
+        setDeletedUsers((prev) => {
+            if (prev.includes(otherUser)) {
+                const updated = prev.filter((u) => u !== otherUser);
+                localStorage.setItem(`deleted_${myUsername}`, JSON.stringify(updated));
+                return updated;
+            }
+            return prev;
         });
-    };
 
+        setMessages((prev) => {
+            if (prev.some((m) => m.id === msg.id)) return prev;
+            const updated = [...prev, msg];
+            localStorage.setItem(`messages_${myUsername}`, JSON.stringify(updated));
+            return updated;
+        });
 
-    // ✅ Handle incoming message
-    const handleIncomingMessage = useCallback(
-        (msg) => {
-            if (!msg.id) return;
+        setChatList((prev) => {
+            const index = prev.findIndex((c) => c.adduser === otherUser);
+            let updated;
+            if (index !== -1) {
+                updated = [...prev];
+                updated[index] = {
+                    ...updated[index],
+                    lastMessage: type === "image" ? "📷 Photo" : message,
+                    unreadCount: from === myUsername ? 0 : (updated[index].unreadCount || 0) + 1,
+                };
+                const [moved] = updated.splice(index, 1);
+                updated.unshift(moved);
+            } else {
+                updated = [
+                    { adduser: otherUser, lastMessage: type === "image" ? "📷 Photo" : message, unreadCount: from === myUsername ? 0 : 1 },
+                    ...prev,
+                ];
+            }
+            localStorage.setItem(`chatlist_${myUsername}`, JSON.stringify(updated));
+            return updated;
+        });
+    }, [myUsername]);
 
-            const { from, to, message, type } = msg;
-            const otherUser = from === myUsername ? to : from;
-
-            if (deletedUsers.includes(otherUser)) return;
-
-            // save messages
-            setMessages((prev) => {
-                if (prev.some((m) => m.id === msg.id)) return prev;
-                const updated = [...prev, msg];
-                localStorage.setItem(
-                    `messages_${myUsername}`,
-                    JSON.stringify(updated)
-                );
-                return updated;
-            });
-
-            // update chat list
-            setChatList((prev) => {
-                const index = prev.findIndex((c) => c.adduser === otherUser);
-                let updated;
-                if (index !== -1) {
-                    updated = [...prev];
-                    updated[index] = {
-                        ...updated[index],
-                        lastMessage: type === "image" ? "📷 Photo" : message,
-                        unreadCount:
-                            from === myUsername ? 0 : (updated[index].unreadCount || 0) + 1,
-                    };
-                    const [moved] = updated.splice(index, 1);
-                    updated.unshift(moved);
-                } else {
-                    updated = [
-                        {
-                            adduser: otherUser,
-                            lastMessage: type === "image" ? "📷 Photo" : message,
-                            unreadCount: from === myUsername ? 0 : 1,
-                        },
-                        ...prev,
-                    ];
-                }
-                localStorage.setItem(
-                    `chatlist_${myUsername}`,
-                    JSON.stringify(updated)
-                );
-                return updated;
-            });
-        },
-        [myUsername, deletedUsers]
-    );
-
-    // ✅ Listen to private messages
     useEffect(() => {
         if (!myUsername) return;
         socket.on("privateMessage", handleIncomingMessage);
         return () => socket.off("privateMessage", handleIncomingMessage);
     }, [myUsername, handleIncomingMessage]);
 
-    // ✅ Send message
+    // ✅ Send private message
     const sendMessage = (to, message, type = "text") => {
         const payload = {
             id: uuidv4(),
@@ -256,29 +1568,30 @@ export const ChatProvider = ({ children }) => {
         handleIncomingMessage(payload);
     };
 
-    // ✅ Start calling
-    const startCalling = (id) => {
-        socket.emit("call-user", { from: myUsername, to: id });
+    // ✅ Group messages
+    const sendGroupMessage = (groupId, username, text, type = "text") => {
+        const payload = { groupId, username, message: text, type, timestamp: new Date().toISOString() };
+        socket.emit("groupMessage", payload);
+        setGroupMessages((prev) => {
+            const prevMsgs = prev[groupId] || [];
+            return { ...prev, [groupId]: [...prevMsgs, payload] };
+        });
     };
 
+    const joinGroup = (groupId) => socket.emit("joinGroup", { groupId, username: myUsername });
+    const leaveGroup = (groupId) => {
+        socket.emit("leaveGroup", { groupId, username: myUsername });
+        setGroupMessages((prev) => ({ ...prev, [groupId]: [] }));
+    };
 
-    const apptesd = () => {
-
-        socket.emit("accept-call", { from: myUsername, to: incomingCall.from });
-    }
-
-    // ✅ Mark chat as read
     const markChatAsRead = (otherUser) => {
         setChatList((prev) => {
-            const updated = prev.map((item) =>
-                item.adduser === otherUser ? { ...item, unreadCount: 0 } : item
-            );
+            const updated = prev.map((item) => (item.adduser === otherUser ? { ...item, unreadCount: 0 } : item));
             localStorage.setItem(`chatlist_${myUsername}`, JSON.stringify(updated));
             return updated;
         });
     };
 
-    // ✅ Delete chat
     const addToDeletedUsers = (user) => {
         setDeletedUsers((prev) => {
             const updated = prev.includes(user) ? prev : [...prev, user];
@@ -287,7 +1600,6 @@ export const ChatProvider = ({ children }) => {
         });
     };
 
-    // ✅ Logout
     const clearAll = () => {
         setMyUsername("");
         setMessages([]);
@@ -295,27 +1607,23 @@ export const ChatProvider = ({ children }) => {
         setTypingUser(null);
         setOnlineUsers([]);
         setDeletedUsers([]);
-        setIncomingCall(false);
-        setIncomingUser("");
         setIsPremium(false);
         localStorage.clear();
     };
 
-    // ✅ Premium update
     const updatePremium = (status, expiryDate) => {
         setIsPremium(status);
+        localStorage.setItem("isPremium", status ? "true" : "false");
         if (status && expiryDate) {
-            localStorage.setItem("premiumExpiry", expiryDate);
             setPremiumExpiry(expiryDate);
+            localStorage.setItem("premiumExpiry", expiryDate);
         } else {
-            localStorage.removeItem("premiumExpiry");
             setPremiumExpiry(null);
+            localStorage.removeItem("premiumExpiry");
         }
     };
 
-    const visibleChats = chatList.filter(
-        (c) => !deletedUsers.includes(c.adduser)
-    );
+    const visibleChats = chatList.filter((c) => !deletedUsers.includes(c.adduser));
 
     return (
         <ChatContext.Provider
@@ -327,26 +1635,30 @@ export const ChatProvider = ({ children }) => {
                 typingUser,
                 onlineUsers,
                 deletedUsers,
-                incomingCall,
-                setIncomingCall,
-                incomingUser,
-                setIncomingUser,
-                startCalling,
                 sendMessage,
                 markChatAsRead,
-                apptesd,
                 addToDeletedUsers,
                 setMyUsername,
                 clearAll,
                 isPremium,
                 updatePremium,
-                sendGroupMessage,
-                joinGroup,
-
-                groupMessages,
+                incomingUser,
+                incomingCall,
+                acceptedCall,
                 premiumExpiry,
-                setpath,
-                pathname
+                groupMessages,
+                joinGroup,
+                sendGroupMessage,
+                activeChatRoom,
+                setActiveChatRoom,
+                login,
+                setLogin,
+                leaveGroup,
+                setIncomingCall,
+                // 📞 added call functions
+                callUser,
+                acceptCall,
+                rejectCall,
             }}
         >
             {children}

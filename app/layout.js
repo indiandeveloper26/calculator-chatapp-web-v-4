@@ -94,6 +94,9 @@ import IncomingCall from "./calling/page";
 
 import WhatsApplayout from "./dummy/layoutt";
 
+import ClientLayout from "./component/ClientLayout";
+import WhatsAppLayout from "./component/whatsaplayout";
+
 
 
 
@@ -120,14 +123,19 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {/* ✅ Yaha wrap karna hota hai */}
-        <WhatsApplayout />
+        {/* <Notification name='sahilindia' message="hi this is new" /> */}
+        {/* <WhatsApplayout /> */}
         <ChatProvider>
+          <WhatsAppLayout />
+          <ClientLayout>
+            {children}
+          </ClientLayout>
 
-          {children}
           <IncomingCall />
         </ChatProvider>
 

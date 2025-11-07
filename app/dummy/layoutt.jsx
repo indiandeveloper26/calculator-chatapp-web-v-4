@@ -11,8 +11,8 @@ export default function WhatsApplayout() {
     const logout = () => {
         if (window.confirm("Are you sure you want to logout?")) {
             localStorage.clear();
-            clearAll?.();
-            router.push("/");
+
+            router.push("/login");
         }
     };
 

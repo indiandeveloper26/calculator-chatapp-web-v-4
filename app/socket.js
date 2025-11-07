@@ -15,7 +15,9 @@
 import { io } from "socket.io-client";
 
 // ✅ Socket instance
-const socket = io("http://localhost:4000", {
+// const socket = io("https://calculator-chatapp-server-v-2.onrender.com", {
+const socket = io("http://10.174.17.92:4000", {
+
     transports: ["websocket"],
     autoConnect: false, // manual connect
 });

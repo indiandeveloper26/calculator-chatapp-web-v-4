@@ -1,11 +1,14 @@
-"use client";
-import { useContext, useState } from "react";
-import axios from "axios";
-import { useRouter } from "next/navigation";
-import api from "../apicall.js";
-import { ChatContext } from "../context/chatcontext.jsx";
+// pages/login.jsx
 
-export default function page() {
+"use client";
+import { useState, useContext } from "react";
+import Image from "next/image";
+// static image in /assets
+import { useRouter } from "next/navigation"
+import { ChatContext } from "../context/chatcontext";
+import api from "../apicall";
+
+export default function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -13,11 +16,8 @@ export default function page() {
     const [loading, setLoading] = useState(false);
 
     const router = useRouter();
+    const { setMyUsername, login, setLogin, updatePremium } = useContext(ChatContext);
 
-
-    const { setMyUsername, } = useContext(ChatContext);
-
-    // ✅ Validation
     const validate = () => {
         const newErrors = {};
         if (!username.trim()) newErrors.username = "Username is required";
@@ -26,45 +26,36 @@ export default function page() {
         return Object.keys(newErrors).length === 0;
     };
 
-    // ✅ Login handler
     const handleLogin = async () => {
         if (!validate()) return;
-
         setLoading(true);
-        const lowerUsername = username.toLowerCase();
 
         try {
             const { data } = await api.post("/log", {
-                username: lowerUsername,
+                username: username.toLowerCase(),
                 password,
             });
 
-            console.log(data)
-
-            // ✅ Save to localStorage
-            if (data.token) localStorage.setItem("token", data.token);
-            if (data.user?.username) localStorage.setItem("username", data.user.username);
+            if (data.token) localStorage.setItem("tokenn", data.token);
+            if (data.user?.username) {
+                localStorage.setItem("username", data.user.username);
+                setMyUsername(data.user.username);
+            }
 
             if (data.userdata) {
                 if (data.userdata.premiumExpiry)
                     localStorage.setItem("premiumExpiry", data.userdata.premiumExpiry);
-
-                if (data.userdata.isPremium !== undefined)
+                if (data.userdata.isPremium !== undefined) {
                     localStorage.setItem("isPremium", data.userdata.isPremium.toString());
+                    updatePremium(data.userdata.isPremium, data.userdata.premiumExpiry);
+                }
             }
 
             alert("✅ Login Successful!");
-
-            let usernae = await localStorage.getItem("username")
-
-
-            console.log(usernae)
-
-            setMyUsername(usernae)
-
-            router.push("chatlist"); // redirect after login
+            setLogin(true);
+            router.push("/chatlist"); // redirect to chat page
         } catch (err) {
-            console.error(err);
+            console.log(err);
             alert("❌ Invalid username or password");
         } finally {
             setLoading(false);
@@ -72,61 +63,72 @@ export default function page() {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-black">
-            <div className="w-full max-w-md bg-gray-900 p-8 rounded-2xl shadow-lg">
-                <h1 className="text-3xl font-bold text-white text-center mb-6">
-                    Welcome to Login 👋
-                </h1>
+        <div className="flex items-center justify-center min-h-screen bg-gray-100">
+            <div className="relative w-full max-w-md p-8 bg-white rounded-2xl shadow-lg">
+                {/* Background Image */}
+                <div className="absolute top-0 left-0 w-full h-full -z-10 rounded-2xl overflow-hidden">
+                    <Image src={'/login.jpg'} alt="Login Background" layout="fill" objectFit="cover" />
+                    <div className="absolute inset-0 bg-black/50"></div>
+                </div>
+
+                {/* Logo */}
+                <div className="flex justify-center mb-6">
+                    <Image src={'/login.jpg'} alt="Logo" width={220} height={150} className="rounded-xl" />
+                </div>
+
+                <h1 className="text-3xl font-bold text-center text-white mb-2">Welcome 👋</h1>
+                <p className="text-center text-gray-300 mb-6">Sign in to continue chatting</p>
 
                 {/* Username */}
-                <input
-                    type="text"
-                    placeholder="Username"
-                    className="w-full p-3 mb-2 rounded bg-gray-800 text-white focus:outline-none"
-                    value={username}
-                    onChange={(e) => {
-                        setUsername(e.target.value);
-                        if (errors.username) setErrors((prev) => ({ ...prev, username: null }));
-                    }}
-                />
-                {errors.username && <p className="text-red-500 text-sm">{errors.username}</p>}
+                <div className="mb-4">
+                    <input
+                        type="text"
+                        placeholder="Username"
+                        value={username}
+                        onChange={(e) => {
+                            setUsername(e.target.value);
+                            if (errors.username) setErrors((prev) => ({ ...prev, username: null }));
+                        }}
+                        className="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    {errors.username && <p className="text-red-500 text-sm mt-1">{errors.username}</p>}
+                </div>
 
                 {/* Password */}
-                <div className="relative">
+                <div className="mb-4 relative">
                     <input
                         type={showPassword ? "text" : "password"}
                         placeholder="Password"
-                        className="w-full p-3 mb-2 rounded bg-gray-800 text-white focus:outline-none"
                         value={password}
                         onChange={(e) => {
                             setPassword(e.target.value);
                             if (errors.password) setErrors((prev) => ({ ...prev, password: null }));
                         }}
+                        className="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     <button
                         type="button"
-                        className="absolute right-3 top-3 text-white"
                         onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-3 text-gray-600"
                     >
-                        {showPassword ? "🙈" : "👁️"}
+                        {showPassword ? "Hide" : "Show"}
                     </button>
+                    {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
                 </div>
-                {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
 
-                {/* Login button */}
+                {/* Login Button */}
                 <button
                     onClick={handleLogin}
                     disabled={loading}
-                    className="w-full bg-white text-black py-3 rounded-lg font-bold mt-4 hover:bg-gray-300 disabled:opacity-60"
+                    className="w-full py-3 mt-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-70"
                 >
-                    {loading ? "Logging in..." : "Login"}
+                    {loading ? "Loading..." : "Login"}
                 </button>
 
-                {/* Signup redirect */}
+                {/* Signup Button */}
                 <button
-                    onClick={() => router.push("/signup")}
-                    disabled={loading}
-                    className="w-full bg-gray-700 text-white py-3 rounded-lg font-bold mt-3 hover:bg-gray-600"
+                    onClick={() => router.push("/singupp")}
+                    className="w-full py-3 mt-2 bg-white text-blue-600 rounded-lg border border-gray-300 hover:bg-gray-100"
                 >
                     Create Account
                 </button>

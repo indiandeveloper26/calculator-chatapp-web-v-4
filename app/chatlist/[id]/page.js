@@ -1,3 +1,183 @@
+// "use client"
+
+// import api from "@/app/apicall";
+// import { ChatContext } from "@/app/context/chatcontext";
+// import React, { useContext, useState, useEffect, useRef } from "react";
+// import { useParams } from "next/navigation";
+
+// // Import vector icons
+// import { FaUserCircle, FaCamera, FaPhone, FaVideo } from "react-icons/fa";
+
+// export default function ChatRoom({ userId }) {
+//     const { id } = useParams();
+//     const {
+//         messages,
+//         myUsername,
+//         sendMessage,
+//         onlineUsers,
+//         startCalling,
+//         activeChatRoom,
+//         setActiveChatRoom,
+//         socket,
+//         typingUser,
+//     } = useContext(ChatContext);
+
+//     const [input, setInput] = useState("");
+//     const [previewImg, setPreviewImg] = useState(null);
+//     const [menuVisible, setMenuVisible] = useState(false);
+//     const fileInputRef = useRef();
+//     const messagesEndRef = useRef();
+
+//     useEffect(() => setActiveChatRoom(false), []);
+//     useEffect(() => {
+//         return () => setActiveChatRoom(true);
+//     }, []);
+
+//     const filtered = messages.filter(
+//         (m) =>
+//             (m.from === myUsername && m.to === id) ||
+//             (m.from === id && m.to === myUsername)
+//     );
+
+//     const displayMessages =
+//         typingUser === id
+//             ? [...filtered, { id: "typing", from: id, message: "" }]
+//             : filtered;
+
+//     useEffect(() => {
+//         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+//     }, [displayMessages]);
+
+//     const handleSend = () => {
+//         if (input.trim()) {
+//             sendMessage(id, input.trim(), "text"); // <-- use id from useParams
+//             setInput("");
+//         }
+//     };
+
+//     const handleTyping = (text) => {
+//         setInput(text);
+//         if (text.trim()) socket.emit("typing", { from: myUsername, to: id });
+//     };
+
+//     const pickImage = (e) => {
+//         const file = e.target.files[0];
+//         if (file) uploadImage(file);
+//     };
+
+//     const uploadImage = async (image) => {
+//         const formData = new FormData();
+//         formData.append("image", image);
+
+//         try {
+//             const res = await api.post("/upload", formData, {
+//                 headers: { "Content-Type": "multipart/form-data" },
+//             });
+
+//             const data = res.data;
+//             if (data.url) sendMessage(id, data.url, "image");
+//         } catch (err) {
+//             console.error("Upload error:", err);
+//         }
+//     };
+
+//     return (
+//         <div style={{ display: "flex", flexDirection: "column", height: "100vh", background: "#121212" }}>
+//             {/* Header */}
+//             <div style={{ display: "flex", alignItems: "center", padding: 12, backgroundColor: "#1F1F1F" }}>
+//                 <button onClick={() => window.history.back()} style={{ marginRight: 10 }}>Back</button>
+
+//                 {/* Vector user icon */}
+//                 <FaUserCircle size={40} color="#9CA3AF" style={{ marginRight: 8 }} />
+
+//                 <div style={{ flex: 1 }}>
+//                     <p style={{ color: "#fff", fontWeight: 600 }}>{userId}</p>
+//                     <p style={{ color: onlineUsers.includes(userId) ? "#34D399" : "#9CA3AF" }}>
+//                         {onlineUsers.includes(userId) ? "Online" : "Offline"}
+//                     </p>
+//                 </div>
+
+//                 <div style={{ display: "flex", gap: 8 }}>
+//                     <button onClick={() => startCalling(userId)} style={{ background: "#10B981", borderRadius: 20, padding: 8 }}>
+//                         <FaPhone color="#fff" />
+//                     </button>
+//                     <button style={{ background: "#3B82F6", borderRadius: 20, padding: 8 }}>
+//                         <FaVideo color="#fff" />
+//                     </button>
+//                     <button onClick={() => setMenuVisible(true)}>⋮</button>
+//                 </div>
+//             </div>
+
+//             {/* Messages */}
+//             <div style={{ flex: 1, overflowY: "auto", padding: 8 }}>
+//                 {displayMessages.map((item, idx) => {
+//                     const isMine = item.from === myUsername;
+//                     const isTyping = item.id === "typing";
+
+//                     return (
+//                         <div key={item.id || idx} style={{
+//                             maxWidth: "80%",
+//                             alignSelf: isMine ? "flex-end" : "flex-start",
+//                             background: isMine ? "#10B981" : "#2C2C2C",
+//                             color: isMine ? "#fff" : "#E5E7EB",
+//                             borderRadius: 16,
+//                             padding: 10,
+//                             margin: "4px 0"
+//                         }}>
+//                             {isTyping ? (
+//                                 <div style={{ display: "flex", gap: 4 }}>
+//                                     <div style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: "#9CA3AF" }} />
+//                                     <div style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: "#9CA3AF" }} />
+//                                     <div style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: "#9CA3AF" }} />
+//                                 </div>
+//                             ) : item.type === "image" ? (
+//                                 <img src={"http://10.13.188.92:4000/uploads/1762449929114-998098927.jpg"} style={{ width: 200, height: 200, borderRadius: 12 }} onClick={() => setPreviewImg(item.message)} />
+//                             ) : (
+//                                 <p>{item.message}</p>
+//                             )}
+//                             {isMine && !isTyping && <p style={{ fontSize: 10 }}>{item.seen ? "✓✓ Seen" : "✓ Sent"}</p>}
+//                         </div>
+//                     );
+//                 })}
+//                 <div ref={messagesEndRef} />
+//             </div>
+
+//             {/* Input */}
+//             <div style={{ display: "flex", padding: 8, backgroundColor: "#1F1F1F", alignItems: "center" }}>
+//                 <input type="file" ref={fileInputRef} onChange={pickImage} style={{ display: "none" }} />
+//                 <button onClick={() => fileInputRef.current.click()} style={{ padding: 8, color: "#10B981" }}>
+//                     <FaCamera />
+//                 </button>
+//                 <input
+//                     value={input}
+//                     onChange={(e) => handleTyping(e.target.value)}
+//                     placeholder="Type a message..."
+//                     style={{
+//                         flex: 1,
+//                         padding: "8px 12px",
+//                         borderRadius: 20,
+//                         margin: "0 6px",
+//                         background: "#2C2C2C",
+//                         color: "#E5E7EB",
+//                         border: "none"
+//                     }}
+//                 />
+//                 <button onClick={handleSend} style={{ background: "#10B981", padding: "8px 16px", borderRadius: 20, color: "#fff" }}>Send</button>
+//             </div>
+
+//             {/* Image Preview */}
+//             {previewImg && (
+//                 <div onClick={() => setPreviewImg(null)} style={{
+//                     position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.9)", display: "flex", justifyContent: "center", alignItems: "center"
+//                 }}>
+//                     <img src={previewImg} style={{ maxWidth: "90%", maxHeight: "90%" }} />
+//                 </div>
+//             )}
+//         </div>
+//     );
+// }
+
+
 
 
 
@@ -14,28 +194,88 @@
 
 
 "use client";
-import { useContext, useState, useEffect, useRef } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { ChatContext } from "../../context/chatcontext.jsx";
-import { FiArrowLeft, FiPhone, FiVideo, FiMoreVertical } from "react-icons/fi";
-import Image from "next/image";
 
-export default function ChatRoom() {
+import api from "@/app/apicall";
+import { ChatContext } from "@/app/context/chatcontext";
+import React, { useContext, useState, useEffect, useRef } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { FaUserCircle, FaCamera, FaPhone, FaVideo } from "react-icons/fa";
+
+export default function ChatRoom({ userId }) {
     const { id } = useParams();
-    const router = useRouter();
-    const { messages, myUsername, sendMessage, onlineUsers, startCalling, socket, typingUser } =
-        useContext(ChatContext);
+    const {
+        messages,
+        myUsername,
+        sendMessage,
+        onlineUsers,
+        activeChatRoom,
+        setActiveChatRoom,
+        socket,
+        typingUser,
+    } = useContext(ChatContext);
 
     const [input, setInput] = useState("");
     const [previewImg, setPreviewImg] = useState(null);
+    const [menuVisible, setMenuVisible] = useState(false);
+    const [incomingCall, setIncomingCall] = useState(false);
+    const [caller, setCaller] = useState("");
+    const fileInputRef = useRef();
     const messagesEndRef = useRef();
 
+    let router = useRouter()
+
+    useEffect(() => setActiveChatRoom(false), []);
+    useEffect(() => {
+        return () => setActiveChatRoom(true);
+    }, []);
+
+    // Listen for incoming call
+    useEffect(() => {
+        socket.on("incoming-call", ({ from }) => {
+            setIncomingCall(true);
+            setCaller(from);
+        });
+
+        socket.on("call-ended", () => {
+            setIncomingCall(false);
+            setCaller("");
+        });
+
+        return () => {
+            socket.off("incoming-call");
+            socket.off("call-ended");
+        };
+    }, [socket]);
+
+    // Emit video call request
+    const handleVideoCall = () => {
+        socket.emit("call-user", { from: myUsername, to: id });
+        // alert(`videocall ${id}...`);
+        router.push(`videocall/${id}`)
+    };
+
+    // Accept / Reject
+    const acceptCall = () => {
+        socket.emit("accept-call", { from: myUsername, to: caller });
+        setIncomingCall(false);
+        alert(`Call accepted with ${caller}`);
+    };
+
+    const rejectCall = () => {
+        socket.emit("reject-call", { from: myUsername, to: caller });
+        setIncomingCall(false);
+    };
+
     const filtered = messages.filter(
-        (m) => (m.from === myUsername && m.to === id) || (m.from === id && m.to === myUsername)
+        (m) =>
+            (m.from === myUsername && m.to === id) ||
+            (m.from === id && m.to === myUsername)
     );
 
     const displayMessages =
-        typingUser === id ? [...filtered, { id: "typing", from: id, message: "" }] : filtered;
+        typingUser === id
+            ? [...filtered, { id: "typing", from: id, message: "" }]
+            : filtered;
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -50,144 +290,135 @@ export default function ChatRoom() {
 
     const handleTyping = (text) => {
         setInput(text);
-        if (text.trim()) {
-            socket.emit("typing", { from: myUsername, to: id });
-        }
+        if (text.trim()) socket.emit("typing", { from: myUsername, to: id });
     };
 
-    const handlePickImage = async (e) => {
+    const pickImage = (e) => {
         const file = e.target.files[0];
-        if (!file) return;
+        if (file) uploadImage(file);
+    };
 
+    const uploadImage = async (image) => {
         const formData = new FormData();
-        formData.append("file", file);
-
+        formData.append("image", image);
         try {
-            const res = await fetch("https://chat-app-server-render-v-1.onrender.com/upload", {
-                method: "POST",
-                body: formData,
+            const res = await api.post("/upload", formData, {
+                headers: { "Content-Type": "multipart/form-data" },
             });
-            const data = await res.json();
-            sendMessage(id, data.url, "image");
+            const data = res.data;
+            if (data.url) sendMessage(id, data.url, "image");
         } catch (err) {
-            console.log("Upload failed:", err);
-            alert("Upload failed");
-        }
-    };
-
-    const startAudioCall = () => {
-        router.push(`/chatlist/${id}/call/audio`);
-    };
-
-    const startVideoCall = () => {
-        try {
-            startCalling(id);
-        } catch (error) {
-            console.log("Error starting call:", error);
+            console.error("Upload error:", err);
         }
     };
 
     return (
-        <div className="flex flex-col h-screen bg-gray-100">
-            {/* Responsive WhatsApp-style Header */}
-            <div className="flex justify-between items-center px-4 h-16 bg-[#075E54] text-white">
-                <div className="flex items-center">
-                    <button onClick={() => router.back()} className="mr-3">
-                        <FiArrowLeft size={24} />
-                    </button>
-                    <Image
-                        src={`https://placekitten.com/40/40`}
-                        alt="Group"
-                        width={40}
-                        height={40}
-                        className="rounded-full"
-                    />
-                    <div className="ml-3 flex flex-col truncate">
-                        <span className="font-semibold text-base sm:text-lg truncate">{id}</span>
-                        <span className={`text-xs sm:text-sm truncate ${onlineUsers.includes(id) ? "text-green-400" : "text-gray-300"}`}>
-                            {onlineUsers.includes(id) ? "Online" : "Offline"}
-                        </span>
-                    </div>
+        <div style={{ display: "flex", flexDirection: "column", height: "100vh", background: "#121212" }}>
+            {/* Header */}
+            <div style={{ display: "flex", alignItems: "center", padding: 12, backgroundColor: "#1F1F1F" }}>
+                <button onClick={() => window.history.back()} style={{ marginRight: 10 }}>Back</button>
+                <FaUserCircle size={40} color="#9CA3AF" style={{ marginRight: 8 }} />
+                <div style={{ flex: 1 }}>
+                    <p style={{ color: "#fff", fontWeight: 600 }}>{userId}</p>
+                    <p style={{ color: onlineUsers.includes(userId) ? "#34D399" : "#9CA3AF" }}>
+                        {onlineUsers.includes(userId) ? "Online" : "Offline"}
+                    </p>
                 </div>
-
-                <div className="flex items-center space-x-2">
-                    <button
-                        onClick={startAudioCall}
-                        className="bg-green-500 p-2 rounded-full hover:bg-green-600"
-                    >
-                        <FiPhone size={18} />
+                <div style={{ display: "flex", gap: 8 }}>
+                    <button style={{ background: "#10B981", borderRadius: 20, padding: 8 }}>
+                        <FaPhone color="#fff" />
                     </button>
                     <button
-                        onClick={startVideoCall}
-                        className="bg-blue-600 p-2 rounded-full hover:bg-blue-700"
+                        onClick={handleVideoCall}
+                        style={{ background: "#3B82F6", borderRadius: 20, padding: 8 }}
                     >
-                        <FiVideo size={18} />
+                        <FaVideo color="#fff" />
                     </button>
-                    <FiMoreVertical size={20} className="cursor-pointer" />
+                    <button onClick={() => setMenuVisible(true)}>⋮</button>
                 </div>
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-3 space-y-2 bg-gray-100 sm:p-4">
-                {displayMessages.map((msg) => {
-                    const isMine = msg.from === myUsername;
-                    const isTyping = msg.id === "typing";
+            <div style={{ flex: 1, overflowY: "auto", padding: 8 }}>
+                {displayMessages.map((item, idx) => {
+                    const isMine = item.from === myUsername;
+                    const isTyping = item.id === "typing";
+
                     return (
-                        <div key={msg.id} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
-                            <div
-                                className={`p-3 rounded-xl max-w-[80%] sm:max-w-[70%] ${isMine ? "bg-green-500 rounded-br-none text-white" : "bg-white rounded-bl-none text-black"
-                                    }`}
-                            >
-                                {isTyping ? (
-                                    <div className="flex space-x-1">
-                                        <span className="animate-bounce">•</span>
-                                        <span className="animate-bounce delay-150">•</span>
-                                        <span className="animate-bounce delay-300">•</span>
-                                    </div>
-                                ) : msg.type === "image" ? (
-                                    <img
-                                        src={msg.message}
-                                        alt="sent"
-                                        className="w-full max-w-xs sm:max-w-[200px] h-auto object-cover rounded-lg cursor-pointer"
-                                        onClick={() => setPreviewImg(msg.message)}
-                                    />
-                                ) : (
-                                    <p className="text-sm sm:text-base">{msg.message}</p>
-                                )}
-                                {isMine && !isTyping && (
-                                    <p className="text-xs mt-1">{msg.seen ? "✓✓ Seen" : "✓ Sent"}</p>
-                                )}
-                            </div>
+                        <div key={item.id || idx} style={{
+                            maxWidth: "80%",
+                            alignSelf: isMine ? "flex-end" : "flex-start",
+                            background: isMine ? "#10B981" : "#2C2C2C",
+                            color: isMine ? "#fff" : "#E5E7EB",
+                            borderRadius: 16,
+                            padding: 10,
+                            margin: "4px 0"
+                        }}>
+                            {isTyping ? (
+                                <div style={{ display: "flex", gap: 4 }}>
+                                    <div style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: "#9CA3AF" }} />
+                                    <div style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: "#9CA3AF" }} />
+                                    <div style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: "#9CA3AF" }} />
+                                </div>
+                            ) : item.type === "image" ? (
+                                <img
+                                    src={"http://10.13.188.92:4000/uploads/1762449929114-998098927.jpg"}
+                                    style={{ width: 200, height: 200, borderRadius: 12 }}
+                                    onClick={() => setPreviewImg(item.message)}
+                                />
+                            ) : (
+                                <p>{item.message}</p>
+                            )}
+                            {isMine && !isTyping && <p style={{ fontSize: 10 }}>{item.seen ? "✓✓ Seen" : "✓ Sent"}</p>}
                         </div>
                     );
                 })}
                 <div ref={messagesEndRef} />
             </div>
 
-            {/* Input Bar */}
-            <div className="flex flex-col sm:flex-row p-3 bg-white items-center gap-2 sm:gap-3">
-                <input type="file" accept="image/*" onChange={handlePickImage} className="text-sm" />
+            {/* Input */}
+            <div style={{ display: "flex", padding: 8, backgroundColor: "#1F1F1F", alignItems: "center" }}>
+                <input type="file" ref={fileInputRef} onChange={pickImage} style={{ display: "none" }} />
+                <button onClick={() => fileInputRef.current.click()} style={{ padding: 8, color: "#10B981" }}>
+                    <FaCamera />
+                </button>
                 <input
                     value={input}
                     onChange={(e) => handleTyping(e.target.value)}
                     placeholder="Type a message..."
-                    className="flex-1 px-3 py-2 rounded-full border border-gray-300 outline-none text-sm sm:text-base"
+                    style={{
+                        flex: 1,
+                        padding: "8px 12px",
+                        borderRadius: 20,
+                        margin: "0 6px",
+                        background: "#2C2C2C",
+                        color: "#E5E7EB",
+                        border: "none"
+                    }}
                 />
-                <button
-                    onClick={handleSend}
-                    className="bg-green-500 px-4 py-2 rounded-full text-white font-semibold hover:bg-green-600"
-                >
-                    Send
-                </button>
+                <button onClick={handleSend} style={{ background: "#10B981", padding: "8px 16px", borderRadius: 20, color: "#fff" }}>Send</button>
             </div>
 
-            {/* Preview Modal */}
+            {/* Incoming Call Popup */}
+            {incomingCall && (
+                <div style={{
+                    position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.8)",
+                    display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column", color: "#fff"
+                }}>
+                    <p>{caller} is calling...</p>
+                    <div style={{ display: "flex", gap: 20, marginTop: 20 }}>
+                        <button onClick={acceptCall} style={{ background: "green", padding: "10px 20px", borderRadius: 8 }}>Accept</button>
+                        <button onClick={rejectCall} style={{ background: "red", padding: "10px 20px", borderRadius: 8 }}>Reject</button>
+                    </div>
+                </div>
+            )}
+
+            {/* Image Preview */}
             {previewImg && (
-                <div
-                    className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-2"
-                    onClick={() => setPreviewImg(null)}
-                >
-                    <img src={previewImg} className="max-h-[90%] max-w-full sm:max-w-[90%] object-contain rounded-lg" />
+                <div onClick={() => setPreviewImg(null)} style={{
+                    position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.9)", display: "flex", justifyContent: "center", alignItems: "center"
+                }}>
+                    <img src={previewImg} style={{ maxWidth: "90%", maxHeight: "90%" }} />
                 </div>
             )}
         </div>

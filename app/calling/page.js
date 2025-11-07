@@ -42,6 +42,7 @@ export default function IncomingCall() {
             audioRef.current.pause();
             audioRef.current.currentTime = 0;
         }
+        console.log('this usre rject', JSON.stringify(incomingCall))
 
         setIncomingCall(null);
         router.push(`/call?with=${incomingCall.from}`);
@@ -53,9 +54,11 @@ export default function IncomingCall() {
             audioRef.current.currentTime = 0;
         }
 
-        socket.emit("reject-call", { from: myUsername, to: incomingCall.from });
+        // Correctly notify the caller
+        socket.emit("reject-call", { from: incomingCall.from, to: myUsername });
         setIncomingCall(null);
     };
+
 
     if (!incomingCall) return null;
 
