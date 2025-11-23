@@ -18,10 +18,10 @@ import axios from 'axios';
 
 
 const api = axios.create({
-    baseURL: 'https://chat-app-server-render-v-1.onrender.com',
+    // baseURL: 'https://chat-app-server-render-v-1.onrender.com',
+    baseURL: "http://localhost:4000",
     timeout: 5000,
-    withCredentials: true,  // 👈 ye important hai cookies bhejne ke liye
-    credentials: 'include'  // 👈 ye bhi include kare browser ke liye
+    // 👈 ye bhi include kare browser ke liye
 });
 
 // ✅ Request interceptor: Har request mein token lagana hai to
