@@ -11,6 +11,8 @@ export default function IncomingCall() {
     const router = useRouter();
     const audioRef = useRef(null);
 
+    console.log('userdata', incomingUser)
+
     // Play ringtone
     useEffect(() => {
         if (incomingCall) {
@@ -33,9 +35,12 @@ export default function IncomingCall() {
         };
     }, [incomingCall]);
 
-    console.log('inocmig type ', incomingUser)
+    console.log('inocmig type,user ', incomingUser)
 
     const acceptCall = () => {
+
+
+        console.log(incomingUser)
         console.log('call ac[ected and do now')
         if (audioRef.current) {
             audioRef.current.pause();
@@ -43,25 +48,28 @@ export default function IncomingCall() {
         }
         console.log('call ac[ected and do now')
         setIncomingCall(null);
-        socket.emit("accept-call", { from: incomingCall, to: myUsername });
+        socket.emit("accept-call", { from: myUsername, to: incomingUser.from });
+        socket.emit("join_room", { roomId: incomingUser.roomId });
         // Route according to type
         if (incomingUser.type === "video") {
-            router.push(`/chatlist/videocall/${incomingUser.from}`);
+            router.push(`/chatlist/${incomingUser}/callui/videocall`);
         } else {
-            router.push(`/chatlist/audiocall/${incomingUser.from}`);
+            router.push(`/chatlist/${incomingUser.from}/callui/videocall`);
         }
 
 
     };
 
     const rejectCall = () => {
+
+        console.log('callend now')
         if (audioRef.current) {
             audioRef.current.pause();
             audioRef.current.currentTime = 0;
         }
         console.log('rject usr', incomingUser)
 
-        socket.emit("reject-call", { from: incomingUser.from, to: myUsername });
+        socket.emit("end-call", { from: myUsername, to: incomingUser.from });
         setIncomingCall(null);
     };
 

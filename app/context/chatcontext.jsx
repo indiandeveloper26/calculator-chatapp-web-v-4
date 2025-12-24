@@ -1357,8 +1357,9 @@ export const ChatProvider = ({ children }) => {
     const [incomingUser, setIncomingUser] = useState("");
     const [acceptedCall, setAcceptedCall] = useState(false);
     const [groupMessages, setGroupMessages] = useState({});
+    const [callchek, setcallchek] = useState(true)
     const [userdata, setUserdata] = useState(null);
-
+    const [setcurrenuser, setsetcurrenuser] = useState(null)
     const typingTimeoutRef = useRef(null);
 
 
@@ -1396,6 +1397,30 @@ export const ChatProvider = ({ children }) => {
             }
         }
     }, [myUsername]);
+
+
+
+    useEffect(() => {
+
+        socket.on("webrtc-offer", async ({ from, sdp }) => {
+            console.log("📨 Offer received from", from);
+
+            await pc.current.setRemoteDescription({
+                type: "offer",
+                sdp,
+            });
+
+            const answer = await pc.current.createAnswer();
+            await pc.current.setLocalDescription(answer);
+
+            socket.emit("webrtc-answer", {
+                to: from,
+                sdp: answer.sdp,
+            });
+        });
+
+    }, [socket])
+
 
     // ✅ Fetch userdata from API
     useEffect(() => {
@@ -1457,40 +1482,49 @@ export const ChatProvider = ({ children }) => {
 
     // ✅ Incoming call listeners
     useEffect(() => {
-        const handleIncomingCall = ({ from, type, to }) => {
+        const handleIncomingCall = ({ from, type, to, roomId }) => {
             // console.log("📞 Incoming call from:", JSON.stringify(type));
-            setIncomingUser({ from, type, to });
+            setIncomingUser({ from, type, to, roomId });
             setIncomingCall(true);
-            console.log('incoming call ka', from)
+            console.log('incoming call ka', from, roomId)
         };
 
         const handleCallAccepted = ({ from }) => {
             console.log("✅ Call accepted by:", from);
             setAcceptedCall(true);
             setIncomingCall(false);
+
+            socket.emit('accept-call', { to: myUsername })
+            ruter.push(`/chatlist/${from}/callui/videocall`);
         };
 
-        const handleCallRejected = ({ from }) => {
-            console.log("❌ Call rejected kiya gya:", JSON.stringify(from));
+        const handleCallRejected = ({ by }) => {
+
+            setcallchek(false)
+
+            console.log('call reject ho gya yrr', by)
+            console.log("❌ Call rejected kiya gya:", JSON.stringify(by));
             setIncomingCall(false);
             setAcceptedCall(false);
 
             // alert('ja chia fir se ')
-            ruter.push(`/chatlist/${from}`);
+            ruter.push(`/chatlist/${by}`);
             // ruter.push('login')
 
         };
 
+
+
         socket.on("incoming-call", handleIncomingCall);
         socket.on("call-accepted", handleCallAccepted);
-        socket.on("call-rejected", handleCallRejected);
+        socket.on('end-call', handleCallRejected);
 
         return () => {
             socket.off("incoming-call", handleIncomingCall);
             socket.off("call-accepted", handleCallAccepted);
-            socket.off("call-rejected", handleCallRejected);
+            socket.off("end-call", handleCallRejected);
         };
-    }, []);
+    }, [acceptedCall, incomingCall]);
 
     // ✅ Emit when user clicks video call
     const callUser = (to) => {
@@ -1656,6 +1690,7 @@ export const ChatProvider = ({ children }) => {
                 markChatAsRead,
                 addToDeletedUsers,
                 setMyUsername,
+                setcurrenuser, setsetcurrenuser,
                 clearAll,
                 isPremium,
                 updatePremium,
@@ -1672,6 +1707,8 @@ export const ChatProvider = ({ children }) => {
                 setLogin,
                 leaveGroup,
                 setIncomingCall,
+                callchek,
+                setcallchek,
                 // 📞 added call functions
                 callUser,
                 acceptCall,

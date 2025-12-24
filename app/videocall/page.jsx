@@ -41,7 +41,7 @@ function page() {
         <div>video
 
             <button onClick={() => route.push('/demo')}>
-                go now
+                go nowtttt
             </button>
         </div>
     )
